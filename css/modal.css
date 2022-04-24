@@ -200,8 +200,43 @@ label {
 }
 input {
   padding: 8px;
-  border: 0.8px solid #ccc;
+  border: 2px solid #ccc;
   outline: none;
+  position: relative;
+}
+.formData {
+  position: relative;
+}
+.formData i {
+  position: absolute;
+  top: 50px;
+  right: 40px;
+  visibility: hidden;
+}
+.formData small {
+  font-size: 0.9rem;
+  /* position: absolute; */
+  /* bottom: -20px; */
+  /* left: 0; */
+  visibility: hidden;
+}
+.formData.valid input {
+  border-color: #ff0;
+}
+.formData.invalid input {
+  border-color: #f00;
+}
+.formData.valid i.fa-check-circle {
+  color: #ff0;
+  visibility: visible;
+}
+.formData.invalid i.fa-exclamation-circle {
+  color: #f00;
+  visibility: visible;
+}
+.formData.invalid small {
+  color: #f00;
+  visibility: visible;
 }
 .text-control {
   margin: 0;
