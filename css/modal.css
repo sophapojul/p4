@@ -221,20 +221,21 @@ input {
   visibility: hidden;
 }
 .formData.valid input {
-  border-color: #ff0;
+  border-color: #28a745;
 }
 .formData.invalid input {
   border-color: #f00;
 }
 .formData.valid i.fa-check-circle {
-  color: #ff0;
+  color: #28a745;
   visibility: visible;
 }
 .formData.invalid i.fa-exclamation-circle {
   color: #f00;
   visibility: visible;
 }
-.formData.invalid small {
+.formData.invalid div {
+  font-size: 1rem;
   color: #f00;
   visibility: visible;
 }
