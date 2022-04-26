@@ -193,10 +193,13 @@ main {
 
 label {
   font-family: var(--font-default);
-  font-size: 17px;
+  font-size: 15px;
   font-weight: normal;
   display: inline-block;
   margin-bottom: 11px;
+}
+p.text-label {
+  padding: 0.5vw 0;
 }
 input {
   padding: 8px;
@@ -218,7 +221,6 @@ input {
   /* position: absolute; */
   /* bottom: -20px; */
   /* left: 0; */
-  visibility: hidden;
 }
 .formData.valid input {
   border-color: #28a745;
@@ -234,7 +236,10 @@ input {
   color: #f00;
   visibility: visible;
 }
-.formData.invalid div {
+.formData.invalid i.fa-check-circle {
+  visibility: hidden;
+}
+.formData.invalid small {
   font-size: 1rem;
   color: #f00;
   visibility: visible;
