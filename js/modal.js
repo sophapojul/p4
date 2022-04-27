@@ -9,7 +9,7 @@ function editNav() {
 }
 
 // DOM Elements
-const modalbg = document.querySelector('.bground');
+const modalBg = document.querySelector('.bground');
 const modalBtn = document.querySelectorAll('.modal-btn');
 const formData = document.querySelectorAll('.formData');
 const modalClose = document.querySelector('.close');
@@ -29,6 +29,7 @@ const locations = [
   'Boston',
   'Portland'
 ];
+const checkboxes = reserve.checkbox;
 
 const firstErrMsg = 'Prénom doit contenir au moins 2 caractères alphabétiques';
 const lastErrMsg = 'Nom doit contenir au moins 2 caractères alphabétiques';
@@ -37,11 +38,10 @@ const birthdateErrMsg = 'Birthdate doit être une date valide, avant 2013';
 const quantityErrMsg = 'Vous devez saisir un nombre entier';
 const radiosErrMsg = 'Vous devez choisir une ville';
 
-const firstRegExp = /^[-a-zA-Z']{2,20}$/;
-const lastRegExp = /^[-a-zA-Z']{2,20}$/;
-const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/;
-const birthdateRegExp =
-  /^(190[0-9]|19[1-9][0-9]|200[0-9]|201[0-2])-(0[1-9]|1[0-2])-(3[01]|[12][0-9]|[1-9])$/;
+const firstRegExp = /^[-a-zA-Z']{2,20}$/i;
+const lastRegExp = /^[-a-zA-Z']{2,20}$/i;
+const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;
+const birthdateRegExp = /^(190[0-9]|19[1-9][0-9]|200[0-9]|201[0-2])/;
 const quantityRegExp = /^\d+$/;
 
 function setErrMsg(elt, message) {
@@ -53,8 +53,6 @@ function setErrMsg(elt, message) {
   const errElt = document.createElement('small');
   // ajout du message à l'élément créé
   errElt.textContent = message; // 'Votre prénom doit contenir au moins 2 lettres';
-  // add div to DOM
-  // first.after(errDiv, errMsgFirst);
   elt.parentElement.insertAdjacentElement('beforeend', errElt);
   // ajout de la classe invalid au parent
   elt.parentElement.classList.add('invalid');
@@ -79,13 +77,17 @@ function testRegExp(value, regExp) {
 }
 
 function valid(elt, errMsg, regExp) {
+  // TODO if no regExp else testing if elt.checked
   const { value } = elt;
-  if (testRegExp(value, regExp)) {
-    removeErrMsg(elt);
-    return true;
+  if (regExp) {
+    if (testRegExp(value, regExp)) {
+      removeErrMsg(elt);
+      return true;
+    }
+    setErrMsg(elt, errMsg);
+    elt.focus();
+    return false;
   }
-  setErrMsg(elt, errMsg);
-  elt.focus();
   return false;
 }
 
@@ -128,7 +130,7 @@ function isSelected() {
   if (Array.from(radios).filter((elt) => elt.checked).length) {
     if (reserve.children['6'].nodeName === 'SMALL') {
       reserve.children['6'].remove();
-      // return true;
+      return true;
     }
     return true;
   }
@@ -143,9 +145,7 @@ function isSelected() {
 }
 
 function radiosValid() {
-  Array.from(radios).forEach((radio) =>
-    radio.addEventListener('change', isSelected)
-  );
+  radios.forEach((radio) => radio.addEventListener('change', isSelected));
   return isSelected();
 }
 
@@ -188,27 +188,112 @@ quantity.addEventListener('input', () => {
   quantityValid();
 });
 
-// close modal form
-function closeModal() {
-  modalbg.style.display = 'none';
-  modalbg.removeAttribute('aria-modal');
-  modalbg.setAttribute('aria-hidden', 'true');
-  modalClose.removeEventListener('click', closeModal);
-}
+document.addEventListener('DOMContentLoaded', () => {
+  const triggers = document.querySelectorAll('[aria-haspopup="dialog"]');
+  const doc = document.querySelector('main');
+  const focusableElementsArray = [
+    'input:not([disabled])',
+    'select:not([disabled])',
+    '[tabindex]:not([tabindex="-1"])'
+  ];
 
-// launch modal form
-function launchModal() {
-  modalbg.style.display = 'block';
-  modalbg.removeAttribute('aria-hidden');
-  modalbg.setAttribute('aria-modal', 'true');
-  modalClose.addEventListener('click', closeModal);
-}
+  // close modal
+  const closeModal = (modal, trig) => {
+    doc.setAttribute('aria-hidden', false);
+    modalBg.style.display = 'none';
+    modal.removeAttribute('aria-modal');
+    modal.setAttribute('aria-hidden', true);
 
-// launch modal event
-modalBtn.forEach((btn) => btn.addEventListener('click', launchModal));
+    // restoring focus
+    trig.focus();
+  };
 
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape' || e.key === 'Esc') {
-    closeModal();
-  }
+  const openModal = (modal) => {
+    const focusableElements = modal.querySelectorAll(focusableElementsArray);
+    const firstFocusableElement = focusableElements[0];
+    const lastFocusableElement =
+      focusableElements[focusableElements.length - 1];
+
+    doc.setAttribute('aria-hidden', true);
+    modalBg.style.display = 'block';
+    modal.setAttribute('aria-hidden', false);
+    modal.setAttribute('aria-modal', true);
+
+    // return if no focusable element
+    if (!firstFocusableElement) {
+      return;
+    }
+
+    window.setTimeout(() => {
+      firstFocusableElement.focus();
+
+      // trapping focus inside the dialog
+      focusableElements.forEach((focusableElement) => {
+        if (focusableElement.addEventListener) {
+          focusableElement.addEventListener('keydown', (event) => {
+            const tab = event.code === 'Tab';
+
+            if (!tab) {
+              return;
+            }
+
+            if (event.shiftKey) {
+              if (event.target === firstFocusableElement) {
+                // shift + tab
+                event.preventDefault();
+
+                lastFocusableElement.focus();
+              }
+            } else if (event.target === lastFocusableElement) {
+              // tab
+              event.preventDefault();
+
+              firstFocusableElement.focus();
+            }
+          });
+        }
+      });
+    }, 100);
+  };
+
+  triggers.forEach((trigger) => {
+    const dialog = document.getElementById('dialog');
+    const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
+
+    // open modal
+    trigger.addEventListener('click', (event) => {
+      event.preventDefault();
+
+      openModal(dialog);
+    });
+
+    trigger.addEventListener('keydown', (event) => {
+      if (event.code === 'Enter') {
+        event.preventDefault();
+        openModal(dialog);
+      }
+    });
+
+    // close modal
+    dismissTriggers.forEach((dismissTrigger) => {
+      const dismissModal = document.getElementById('dismissModal');
+
+      dismissTrigger.addEventListener('click', (event) => {
+        event.preventDefault();
+        closeModal(dismissModal);
+      });
+    });
+
+    dialog.addEventListener('keydown', (event) => {
+      if (event.code === 'Escape') {
+        closeModal(dialog, trigger);
+      }
+    });
+
+    window.addEventListener('click', (event) => {
+      if (event.target === dialog) {
+        closeModal(dialog);
+      }
+    });
+  });
 });
