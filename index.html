@@ -66,22 +66,21 @@
       </div>
 
       <div
-        class="bground"
+        class="modal"
         id="dialog"
         aria-modal="true"
-        tabindex="-1"
         aria-hidden="true"
         role="dialog"
       >
-        <div class="content">
+        <div class="modal-content">
           <span
             id="dismissModal"
-            class="close"
+            class="modal-close"
             title="Fermer la fenêtre modale"
             data-dismiss="dialog"
           ></span>
           <div class="modal-body" role="document">
-            <form id="reserve" name="reserve" action="index.html" method="get">
+            <form id="reserve" name="reserve" method="get" novalidate>
               <div class="formData">
                 <label for="first">Prénom</label><br />
                 <input
@@ -90,7 +89,7 @@
                   id="first"
                   name="first"
                   minlength="2"
-                  value="pascal"
+                  value="pa"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -102,7 +101,7 @@
                   type="text"
                   id="last"
                   name="last"
-                  value="allau"
+                  value="al"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -114,36 +113,36 @@
                   type="email"
                   id="email"
                   name="email"
-                  value="pascal.allau@laposte.net"
+                  value="q@q.fr"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
               </div>
-              <div class="formData">
+              <div id="formBirthdate" class="formData">
                 <label for="birthdate">Date de naissance</label><br />
                 <input
                   class="text-control"
                   type="date"
                   id="birthdate"
                   name="birthdate"
-                  value="1958-10-10"
+                  value="2000-11-10"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
               </div>
-              <div class="formData">
+              <div id="formQuantity" class="formData">
                 <label for="quantity"
                   >À combien de tournois GameOn avez-vous déjà participé
                   ?</label
                 ><br />
                 <input
-                  type="number"
+                  type="text"
                   class="text-control"
                   id="quantity"
                   name="quantity"
                   min="0"
                   max="99"
-                  value="9"
+                  value="0"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -151,13 +150,14 @@
               <p class="text-label">
                 A quel tournoi souhaitez-vous participer cette année ?
               </p>
-              <div class="formData">
+              <div id="formRadio" class="formData">
                 <input
                   class="checkbox-input"
                   type="radio"
                   id="location1"
                   name="location"
                   value="New York"
+                  checked
                 />
                 <label class="checkbox-label" for="location1">
                   <span
@@ -250,14 +250,13 @@
                 >
               </div>
 
-              <div class="formData">
+              <div id="formMentions" class="formData">
                 <input
                   class="checkbox-input"
                   type="checkbox"
                   id="checkbox1"
                   name="checkbox"
                   checked
-                  required
                 />
                 <label class="checkbox2-label" for="checkbox1">
                   <span class="checkbox-icon" tabindex="0"></span>
@@ -285,6 +284,25 @@
                 C'est parti
               </button>
             </form>
+          </div>
+        </div>
+      </div>
+      <div
+        id="successModal"
+        class="modal"
+        aria-hidden="true"
+        role="dialog"
+        aria-labelledby="modalTitle"
+      >
+        <div class="modal-content">
+          <span
+            id="dismissSuccessModal"
+            class="modal-close"
+            title="Fermer la fenêtre modale"
+            data-dismiss="dialog"
+          ></span>
+          <div class="modal-body" role="document">
+            <h1>Merci pour votre inscription</h1>
           </div>
         </div>
       </div>
