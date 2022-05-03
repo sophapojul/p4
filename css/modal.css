@@ -29,6 +29,7 @@ p {
 
 img {
   padding-right: 1rem;
+  object-fit: cover;
 }
 
 .topnav {
