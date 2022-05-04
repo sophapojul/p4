@@ -11,6 +11,8 @@
 // DOM Elements
 // const modalBtn = document.querySelectorAll('.modal-btn');
 // const formData = document.querySelectorAll('.formData');
+const modalContent = document.querySelector('.modal-content');
+const dialog = document.querySelector('#dialog');
 const reserve = document.querySelector('#reserve');
 const first = document.querySelector('#first');
 const last = document.querySelector('#last');
@@ -42,54 +44,53 @@ const modalClose = document.querySelector('.modal-close');
 
 let modal = null;
 
-// function stopPropagation(e) {
-//   e.stopPropagation();
-// }
+/**
+ * Stop the event from bubbling up the DOM tree.
+ * @param   {Object}  e - The event object.
+ */
+function stopPropagation(e) {
+  e.stopPropagation();
+}
 
 /**
- * It closes the modal, removes the event listeners, and restores focus to the trigger
- * @param {HTMLElement} modal - the modal element
- * @param {HTMLElement} trigger - the button that triggered the modal
+ * It removes the modal from the DOM, removes the event listeners, and restores focus to the trigger
+ * @returns  {HTMLElement}   The modal
  */
-const closeModal = (modalElt, trigger) => {
-  // const bouton = document.getElementById(trigger.dialog);
-  // eslint-disable-next-line no-param-reassign
-  modalElt.style.display = 'none';
-  modalElt.setAttribute('aria-hidden', true);
-  modalElt.removeAttribute('aria-modal');
-  // modalForm.removeEventListener('click', closeModal);
+const closeModal = () => {
+  dialog.style.display = 'none';
+  dialog.setAttribute('aria-hidden', 'true');
+  dialog.removeAttribute('aria-modal');
+  dialog.removeEventListener('click', closeModal);
   modalClose.removeEventListener('click', closeModal);
-  // modalContent.removeEventListener('click', stopPropagation);
+  modalContent.removeEventListener('click', stopPropagation);
   modal = null;
   // restoring focus
-  trigger.focus();
+  // trigger.focus();
   return modal;
 };
 
 /* The above code is listening for a keydown event. If the key pressed is the escape key, the
 closeModal function is called. */
-window.addEventListener('keydown', (e) => {
-  if (e.key === 'Escape') {
-    closeModal(e);
+window.addEventListener('keydown', (ev) => {
+  if (ev.key === 'Escape') {
+    closeModal();
   }
-  // if (e.key === 'Tab') {
-  //   blockFocusInModal(e);
-  // }
 });
-
 /**
- * It opens a modal
- * @param modalElt - the modal element
+ * [openModal description]
+ *
+ * @return  {HTMLElement}  [return description]
  */
-const openModal = (modalElt) => {
-  // eslint-disable-next-line no-param-reassign
-  modalElt.style.display = 'block';
-  modalElt.removeAttribute('aria-hidden');
-  modalElt.setAttribute('aria-modal', true);
-  // modalForm.addEventListener('click', closeModal);
+
+const openModal = () => {
+  dialog.style.display = 'block';
+  // document.getElementById('dialog').style.display = 'block';
+  dialog.removeAttribute('aria-hidden');
+  dialog.setAttribute('aria-modal', 'true');
+  dialog.addEventListener('click', closeModal);
   modalClose.addEventListener('click', closeModal);
-  // modalContent.addEventListener('click', stopPropagation);
-  modal = modalElt;
+  modalContent.addEventListener('click', stopPropagation);
+  modal = dialog;
   return modal;
 };
 
@@ -99,31 +100,29 @@ const openModal = (modalElt) => {
 const triggerElt = () => {
   triggers.forEach((trigger) => {
     trigger.addEventListener('click', openModal);
-    const dialog = document.getElementById('dialog');
     const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
-    trigger.addEventListener('click', (event) => {
-      event.preventDefault();
-      openModal(dialog);
+    trigger.addEventListener('click', (ev) => {
+      ev.preventDefault();
+      openModal();
     });
-    trigger.addEventListener('keydown', (event) => {
-      if (event.code === 'Enter') {
-        event.preventDefault();
-        openModal(dialog);
+    trigger.addEventListener('keydown', (ev) => {
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        openModal();
       }
     });
     /* Closing the modal when the user clicks on the button. */
     dismissTriggers.forEach((dismissTrigger) => {
-      const dismissModal = document.getElementById('dismissModal');
       dismissTrigger.addEventListener('click', (event) => {
         event.preventDefault();
-        closeModal(dismissModal);
+        closeModal();
       });
     });
-    dialog.addEventListener('keydown', (event) => {
-      if (event.code === 'Escape') {
-        closeModal(dialog, trigger);
-      }
-    });
+    // dialog.addEventListener('keydown', (ev) => {
+    //   if (ev.code === 'Escape') {
+    //     closeModal(ev);
+    //   }
+    // });
     //   window.addEventListener('click', (event) => {
     //     if (event.target === dialog) {
     //       closeModal(dialog);
@@ -132,7 +131,12 @@ const triggerElt = () => {
     return trigger;
   });
 };
-
+/**
+ * It adds an error message to the form field if it doesn't already have one
+ * @param {HTMLElement} elt - the element that triggered the event
+ * @param {String} message - the error message to display
+ * @returns the value of the variable eltLastChild.
+ */
 function setErrMsg(elt, message) {
   const eltLastChild = elt.parentElement.lastChild;
   // test présence d'un message d'erreur
@@ -151,7 +155,7 @@ function setErrMsg(elt, message) {
 /**
  * It removes the error message and replaces the class `invalid` by the class `valid` on the parent
  * element of the element passed as argument
- * @param elt - the element that triggered the event
+ * @param {HTMLElement} elt - the element that triggered the event
  */
 function removeErrMsg(elt) {
   const eltLastChild = elt.parentElement.lastChild;
@@ -334,7 +338,7 @@ function isSelected() {
 /**
  * It checks if the checkbox is checked, if not, it displays an error message, if it is, it removes the
  * error message
- * @returns A boolean value.
+ * @returns {Boolean} A boolean value.
  */
 function cguChecked() {
   const cgu = document.querySelector('#checkbox1');
@@ -348,7 +352,7 @@ function cguChecked() {
 
 /**
  * It returns true if all the other functions return true
- * @returns A boolean value.
+ * @returns {Boolean} A boolean value.
  */
 function validate() {
   const validated = !!(
@@ -376,19 +380,19 @@ reserve.addEventListener('submit', (ev) => {
 
 /* The above code is adding an event listener to the first input field. When the input field is
 changed, the firstValid() function is called. */
-first.addEventListener('change', () => {
+first.addEventListener('input', () => {
   firstValid();
 });
 
 /* The above code is adding an event listener to the last input field. When the last input field is
 changed, the lastValid() function is called. */
-last.addEventListener('change', () => {
+last.addEventListener('input', () => {
   lastValid();
 });
 
 /* The above code is adding an event listener to the email input field. When the user changes the value
 of the email input field, the emailValid() function is called. */
-email.addEventListener('change', () => {
+email.addEventListener('input', () => {
   emailValid();
 });
 
@@ -400,7 +404,7 @@ birthdate.addEventListener('change', () => {
 
 /* The above code is adding an event listener to the quantity input field. When the quantity input
 field changes, the quantityValid() function is called. */
-quantity.addEventListener('change', () => {
+quantity.addEventListener('input', () => {
   quantityValid();
 });
 
