@@ -12,6 +12,7 @@
 // const modalBtn = document.querySelectorAll('.modal-btn');
 // const formData = document.querySelectorAll('.formData');
 const modalContent = document.querySelector('.modal-content');
+const modalClose = document.querySelector('.modal-close');
 const dialog = document.querySelector('#dialog');
 const reserve = document.querySelector('#reserve');
 const first = document.querySelector('#first');
@@ -40,7 +41,7 @@ const birthdateRegExp = /^(190[0-9]|19[1-9][0-9]|200[0-9]|201[0-2])/;
 const quantityRegExp = /^(0?\d|[1-9]\d)$/;
 
 const triggers = document.querySelectorAll('[aria-haspopup="dialog"]');
-const modalClose = document.querySelector('.modal-close');
+const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
 
 let modal = null;
 
@@ -56,16 +57,20 @@ function stopPropagation(e) {
  * It removes the modal from the DOM, removes the event listeners, and restores focus to the trigger
  * @returns  {HTMLElement}   The modal
  */
-const closeModal = () => {
-  dialog.style.display = 'none';
-  dialog.setAttribute('aria-hidden', 'true');
-  dialog.removeAttribute('aria-modal');
-  dialog.removeEventListener('click', closeModal);
+const closeModal = (elt, trigger) => {
+  console.log('elt:', trigger);
+  const modalToClose = document.getElementById(
+    elt.getAttribute('data-dismiss')
+  );
+  modalToClose.style.display = 'none';
+  modalToClose.setAttribute('aria-hidden', 'true');
+  modalToClose.removeAttribute('aria-modal');
+  modalToClose.removeEventListener('click', closeModal);
   modalClose.removeEventListener('click', closeModal);
   modalContent.removeEventListener('click', stopPropagation);
   modal = null;
   // restoring focus
-  // trigger.focus();
+  trigger.focus();
   return modal;
 };
 
@@ -81,56 +86,43 @@ window.addEventListener('keydown', (ev) => {
  *
  * @return  {HTMLElement}  [return description]
  */
-
-const openModal = () => {
-  dialog.style.display = 'block';
+const openModal = (elt) => {
+  const modalToOpen = document.getElementById(
+    elt.getAttribute('aria-haspopup')
+  );
+  modalToOpen.style.display = 'block';
   // document.getElementById('dialog').style.display = 'block';
-  dialog.removeAttribute('aria-hidden');
-  dialog.setAttribute('aria-modal', 'true');
-  dialog.addEventListener('click', closeModal);
+  modalToOpen.removeAttribute('aria-hidden');
+  modalToOpen.setAttribute('aria-modal', 'true');
+  modalToOpen.addEventListener('click', closeModal);
   modalClose.addEventListener('click', closeModal);
   modalContent.addEventListener('click', stopPropagation);
-  modal = dialog;
+  modal = modalToOpen;
   return modal;
 };
 
 /**
  * It adds an event listener to each trigger element, which opens the modal when the trigger is clicked or Enter is pressed, which closes the modal when the trigger is clicked or Escape is pressed.
  */
-const triggerElt = () => {
-  triggers.forEach((trigger) => {
-    trigger.addEventListener('click', openModal);
-    const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
-    trigger.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      openModal();
-    });
-    trigger.addEventListener('keydown', (ev) => {
-      if (ev.key === 'Enter') {
-        ev.preventDefault();
-        openModal();
-      }
-    });
-    /* Closing the modal when the user clicks on the button. */
-    dismissTriggers.forEach((dismissTrigger) => {
-      dismissTrigger.addEventListener('click', (event) => {
-        event.preventDefault();
-        closeModal();
-      });
-    });
-    // dialog.addEventListener('keydown', (ev) => {
-    //   if (ev.code === 'Escape') {
-    //     closeModal(ev);
-    //   }
-    // });
-    //   window.addEventListener('click', (event) => {
-    //     if (event.target === dialog) {
-    //       closeModal(dialog);
-    //     }
-    //   });
-    return trigger;
+triggers.forEach((trigger) => {
+  trigger.addEventListener('click', (ev) => {
+    ev.preventDefault();
+    openModal(trigger);
   });
-};
+  trigger.addEventListener('keydown', (ev) => {
+    if (ev.key === 'Enter') {
+      ev.preventDefault();
+      openModal(trigger);
+    }
+  });
+  /* Closing the modal when the user clicks on the button. */
+  dismissTriggers.forEach((dismissTrigger) => {
+    dismissTrigger.addEventListener('click', (event) => {
+      event.preventDefault();
+      closeModal(dismissTrigger, trigger);
+    });
+  });
+});
 /**
  * It adds an error message to the form field if it doesn't already have one
  * @param {HTMLElement} elt - the element that triggered the event
@@ -366,7 +358,6 @@ function validate() {
   );
   return validated;
 }
-triggerElt();
 reserve.addEventListener('submit', (ev) => {
   ev.preventDefault();
   validate();
