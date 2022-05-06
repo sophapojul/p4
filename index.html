@@ -70,7 +70,7 @@
       <div
         class="modal"
         id="dialog"
-        aria-modal="true"
+        aria-modal="false"
         aria-hidden="true"
         role="dialog"
       >
@@ -82,7 +82,13 @@
             data-dismiss="dialog"
           ></span>
           <div class="modal-body" role="document">
-            <form id="reserve" name="reserve" method="get" autocomplete="off">
+            <form
+              id="reserve"
+              name="reserve"
+              method="get"
+              action="#"
+              autocomplete="off"
+            >
               <div class="formData">
                 <label for="first">Prénom</label><br />
                 <input
@@ -91,13 +97,20 @@
                   id="first"
                   name="first"
                   minlength="2"
+                  value="qw"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
               </div>
               <div class="formData">
                 <label for="last">Nom</label><br />
-                <input class="text-control" type="text" id="last" name="last" />
+                <input
+                  class="text-control"
+                  type="text"
+                  id="last"
+                  name="last"
+                  value="qw"
+                />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
               </div>
@@ -108,6 +121,7 @@
                   type="email"
                   id="email"
                   name="email"
+                  value="q@q.qq"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -119,6 +133,7 @@
                   type="date"
                   id="birthdate"
                   name="birthdate"
+                  value="2000-10-11"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -135,6 +150,7 @@
                   name="quantity"
                   min="0"
                   max="99"
+                  value="2"
                 />
                 <i class="fa fa-check-circle" aria-hidden="true"></i>
                 <i class="fa fa-exclamation-circle" aria-hidden="true"></i>
@@ -149,6 +165,7 @@
                   id="location1"
                   name="location"
                   value="New York"
+                  checked
                 />
                 <label class="checkbox-label" for="location1">
                   <span
@@ -247,6 +264,7 @@
                   type="checkbox"
                   id="checkbox1"
                   name="checkbox"
+                  checked
                 />
                 <label class="checkbox2-label" for="checkbox1">
                   <span class="checkbox-icon" tabindex="0"></span>
