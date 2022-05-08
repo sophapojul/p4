@@ -1,13 +1,15 @@
 /* eslint-disable no-alert */
-function editNav() {
+function editNav(ev) {
+  ev.preventDefault();
   const x = document.getElementById('myTopnav');
   if (x.className === 'topnav') {
-    x.className += ' responsive';
+    x.classList.add('responsive');
   } else {
     x.className = 'topnav';
   }
 }
-
+const icon = document.querySelector('a.icon');
+icon.addEventListener('click', editNav);
 // DOM Elements
 // const modalBtn = document.querySelectorAll('.modal-btn');
 // const formData = document.querySelectorAll('.formData');
@@ -23,16 +25,20 @@ const quantity = document.querySelector('#quantity');
 const radioGroup = document.querySelector('#formRadio');
 const checkboxGroup = document.querySelector('#formMentions');
 
-const emptyMsg = 'Le champ ne peut-être vide';
-const firstErrMsg = 'Prénom doit contenir au moins 2 caractères alphabétiques';
-const lastErrMsg = 'Nom doit contenir au moins 2 caractères alphabétiques';
-const emailErrMsg =
-  'Email doit être au format X@X.xx(x) où X contient plusieurs caractères';
+const emptyMsg = 'Le champ ne peut-être vide.';
+const textErrMsg =
+  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe.';
+const firstErrMsg =
+  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe " \' ".';
+const lastErrMsg =
+  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe.';
+const emailErrMsg = 'Le champ doit contenir une adresse mail valide.';
 const birthdateErrMsg =
-  'Birthdate doit être une date valide, inférieure à 2013';
-const quantityErrMsg = 'Vous devez saisir un nombre entier inférieur à 100';
-const radiosErrMsg = 'Vous devez choisir une ville';
-const cguErrMsg = 'Vous devez avoir lu et accepté les cgu';
+  'Le champ doit contenir une date valide, inférieure à 2013.';
+const quantityErrMsg =
+  'Vous devez saisir un nombre entier positif inférieur à 100.';
+const radiosErrMsg = 'Vous devez choisir une ville.';
+const cguErrMsg = 'Vous devez avoir lu et accepté les CGU.';
 
 const firstRegExp = /^[-a-zA-Z']{2,20}$/i;
 const lastRegExp = /^[-a-zA-Z'\s]{2,20}$/i;
@@ -181,10 +187,11 @@ function testRegExp(value, regExp) {
 }
 
 function notNull(selector) {
-  if (selector === null) {
-    return false;
-  }
-  return true;
+  // if (selector === null) {
+  //   return false;
+  // }
+  // return true;
+  return selector !== null;
 }
 
 /**
@@ -210,7 +217,7 @@ function notEmpty(selector) {
       return false;
     case 'date':
       if (new Date(selector.value).toString() === 'Invalid Date') {
-        setErrMsg(birthdate, birthdateErrMsg);
+        setErrMsg(selector, birthdateErrMsg);
         return false;
       }
       return true;
@@ -221,6 +228,34 @@ function notEmpty(selector) {
         return true;
       }
       setErrMsg(selector, emptyMsg);
+      return false;
+    default:
+      return false;
+  }
+}
+
+function allIsValid(elt) {
+  if (!notNull(elt) || !notEmpty(elt)) {
+    setErrMsg(elt, emptyMsg);
+    return false;
+  }
+  removeErrMsg(elt);
+  switch (elt.type) {
+    case 'checkbox':
+      if (elt.checked) {
+        removeErrMsg(elt);
+        return true;
+      }
+      setErrMsg(elt, cguErrMsg);
+      return false;
+    case 'radio':
+      if (elt.checked) {
+        removeErrMsg(elt);
+        return true;
+      }
+      setErrMsg(elt, radiosErrMsg);
+      return false;
+    case 'date':
       return false;
     default:
       return false;
