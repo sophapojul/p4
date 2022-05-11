@@ -60,7 +60,7 @@ img {
 .main-navbar {
   display: flex;
   flex-direction: column;
-  margin: 2%;
+  margin: 3.5%;
 }
 
 .topnav a {
