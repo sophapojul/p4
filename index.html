@@ -22,14 +22,19 @@
         <img alt="logo" src="./assets/img/Logo.png" width="250" height="45" />
       </div>
       <div class="main-navbar">
-        <a href="#"><span>Accueil</span></a>
+        <a
+          href="javascript:void(0);"
+          class="icon"
+          onclick="editNav()"
+          title="Ouvrir le menu"
+        >
+          <i class="fa fa-bars"></i>
+        </a>
+        <a href="#" class="active"><span>Accueil</span></a>
         <a href="#"><span>Détails de l'évènement</span></a>
         <a href="#"><span>À propos</span></a>
         <a href="#"><span>Contact</span></a>
         <a href="#"><span>Évènements passés</span></a>
-        <a href="javascript:void(0);" class="icon">
-          <i class="fa fa-bars fa-custom fa-2x"></i>
-        </a>
       </div>
     </div>
     <main>
@@ -72,6 +77,7 @@
         id="dialog"
         aria-modal="false"
         aria-hidden="true"
+        aria-label="Inscription"
         role="dialog"
       >
         <div class="modal-content">
@@ -88,7 +94,6 @@
               method="get"
               action="#"
               autocomplete="off"
-              no-validate
             >
               <div class="formData">
                 <label for="first">Prénom</label><br />
@@ -176,13 +181,13 @@
                   id="location1"
                   name="location"
                   value="New York"
-                  checked
                 />
                 <label class="checkbox-label" for="location1">
                   <span
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="New York"
                     aria-checked="false"
                   ></span>
                   New York</label
@@ -199,6 +204,7 @@
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="San Francisco"
                     aria-checked="false"
                   ></span>
                   San Francisco</label
@@ -216,6 +222,7 @@
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="Seattle"
                     aria-checked="false"
                   ></span>
                   Seattle</label
@@ -232,6 +239,7 @@
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="Chicago"
                     aria-checked="false"
                   ></span>
                   Chicago</label
@@ -248,6 +256,7 @@
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="Boston"
                     aria-checked="false"
                   ></span>
                   Boston</label
@@ -264,6 +273,7 @@
                     class="checkbox-icon"
                     tabindex="0"
                     role="radio"
+                    aria-label="Portland"
                     aria-checked="false"
                   ></span>
                   Portland</label
@@ -276,7 +286,6 @@
                   type="checkbox"
                   id="checkbox1"
                   name="checkbox"
-                  checked
                 />
                 <label class="checkbox2-label" for="checkbox1">
                   <span class="checkbox-icon" tabindex="0"></span>

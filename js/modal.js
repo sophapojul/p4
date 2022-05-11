@@ -1,15 +1,20 @@
 /* eslint-disable no-alert */
-function editNav(ev) {
-  ev.preventDefault();
-  const x = document.getElementById('myTopnav');
-  if (x.className === 'topnav') {
-    x.classList.add('responsive');
-  } else {
-    x.className = 'topnav';
-  }
+function editNav() {
+  // ev.preventDefault();
+  const myTopnav = document.getElementById('myTopnav');
+  myTopnav.classList.toggle('responsive');
 }
-const icon = document.querySelector('a.icon');
-icon.addEventListener('click', editNav);
+function setActive(el) {
+  [...el.parentElement.children].forEach((sib) =>
+    sib.classList.remove('active')
+  );
+
+  el.classList.add('active');
+}
+const myLinks = document.querySelectorAll('.main-navbar a+a');
+[...myLinks].forEach((el) => {
+  el.addEventListener('click', (e) => setActive(el));
+});
 // DOM Elements
 // const modalBtn = document.querySelectorAll('.modal-btn');
 // const formData = document.querySelectorAll('.formData');
@@ -38,7 +43,8 @@ const birthdateErrMsg =
 const quantityErrMsg =
   'Vous devez saisir un nombre entier positif inférieur à 100.';
 const radiosErrMsg = 'Vous devez choisir une ville.';
-const cguErrMsg = 'Vous devez avoir lu et accepté les CGU.';
+const cguErrMsg =
+  "Vous devez avoir lu et accepté les conditions d'utilisations.";
 
 const firstRegExp = /^[-a-zA-Z']{2,20}$/i;
 const lastRegExp = /^[-a-zA-Z'\s]{2,20}$/i;
@@ -60,24 +66,24 @@ function stopPropagation(e) {
   e.stopPropagation();
 }
 
-function setToCloseModal(elt) {
-  elt.style.display = 'none';
-  elt.setAttribute('aria-hidden', 'true');
-  elt.removeAttribute('aria-modal');
-  elt.removeEventListener('click', closeModal);
+function setToCloseModal(el) {
+  el.style.display = 'none';
+  el.setAttribute('aria-hidden', 'true');
+  el.removeAttribute('aria-modal');
+  el.removeEventListener('click', closeModal);
   modalClose.removeEventListener('click', closeModal);
   modalContent.removeEventListener('click', stopPropagation);
   modal = null;
 }
 
-function setToOpenModal(elt) {
-  elt.style.display = 'block';
-  elt.removeAttribute('aria-hidden');
-  elt.setAttribute('aria-modal', 'true');
-  elt.addEventListener('click', closeModal);
+function setToOpenModal(el) {
+  el.style.display = 'block';
+  el.removeAttribute('aria-hidden');
+  el.setAttribute('aria-modal', 'true');
+  el.addEventListener('click', closeModal);
   modalClose.addEventListener('click', closeModal);
   modalContent.addEventListener('click', stopPropagation);
-  modal = elt;
+  modal = el;
 }
 
 /**
@@ -107,9 +113,9 @@ window.addEventListener('keydown', (ev) => {
  */
 const openModal = (ev) => {
   ev.preventDefault();
-  const elt = document.getElementById(ev.target.getAttribute('aria-haspopup'));
+  const el = document.getElementById(ev.target.getAttribute('aria-haspopup'));
   if (!modal) {
-    setToOpenModal(elt);
+    setToOpenModal(el);
     trig = ev.target;
   }
 };
@@ -138,12 +144,12 @@ triggers.forEach((trigger) => {
 });
 /**
  * It adds an error message to the form field if it doesn't already have one
- * @param {HTMLElement} elt - the element that triggered the event
+ * @param {HTMLElement} el- the element that triggered the event
  * @param {String} message - the error message to display
  * @returns the value of the variable eltLastChild.
  */
-function setErrMsg(elt, message) {
-  const eltLastChild = elt.parentElement.lastChild;
+function setErrMsg(el, message) {
+  const eltLastChild = el.parentElement.lastChild;
   // test présence d'un message d'erreur
   if (eltLastChild.nodeName === 'SMALL') {
     return;
@@ -152,25 +158,36 @@ function setErrMsg(elt, message) {
   const errElt = document.createElement('small');
   // ajout du message à l'élément créé
   errElt.textContent = message; // 'Votre prénom doit contenir au moins 2 lettres';
-  elt.parentElement.insertAdjacentElement('beforeend', errElt);
+  errElt.style.color = 'red';
+  el.parentElement.insertAdjacentElement('beforeend', errElt);
   // ajout de la classe invalid au parent
-  elt.parentElement.classList.add('invalid');
+  el.parentElement.classList.add('invalid');
+  if (el.type === 'checkbox') {
+    document.querySelector(
+      '#checkbox1'
+    ).nextElementSibling.firstElementChild.style.border = '2px solid red';
+  }
 }
 
 /**
  * It removes the error message and replaces the class `invalid` by the class `valid` on the parent
  * element of the element passed as argument
- * @param {HTMLElement} elt - the element that triggered the event
+ * @param {HTMLElement} el - the element that triggered the event
  */
-function removeErrMsg(elt) {
-  const eltLastChild = elt.parentElement.lastChild;
+function removeErrMsg(el) {
+  const eltLastChild = el.parentElement.lastChild;
   // test présence d'un message d'erreur
   if (eltLastChild.nodeName === 'SMALL') {
     // suppression du message d'erreur
     eltLastChild.remove();
     // remplacement de la classe invalid par la classe valid sur le parent
-    elt.parentElement.classList.remove('invalid');
-    elt.parentElement.classList.add('valid');
+    el.parentElement.classList.remove('invalid');
+    el.parentElement.classList.add('valid');
+    if (el.type === 'checkbox') {
+      document.querySelector(
+        '#checkbox1'
+      ).nextElementSibling.firstElementChild.style.border = '';
+    }
   }
 }
 
@@ -228,32 +245,36 @@ function notEmpty(selector) {
         return true;
       }
       setErrMsg(selector, emptyMsg);
+      console.log('selector:', selector);
+      selector.parentElement.style.border = '1px solid red';
       return false;
     default:
       return false;
   }
 }
 
-function allIsValid(elt) {
-  if (!notNull(elt) || !notEmpty(elt)) {
-    setErrMsg(elt, emptyMsg);
+function allIsValid(el) {
+  if (!notNull(el) || !notEmpty(el)) {
+    setErrMsg(el, emptyMsg);
     return false;
   }
-  removeErrMsg(elt);
-  switch (elt.type) {
+  removeErrMsg(el);
+  switch (el.type) {
     case 'checkbox':
-      if (elt.checked) {
-        removeErrMsg(elt);
+      if (el.checked) {
+        removeErrMsg(el);
         return true;
       }
-      setErrMsg(elt, cguErrMsg);
+      setErrMsg(el, cguErrMsg);
       return false;
     case 'radio':
-      if (elt.checked) {
-        removeErrMsg(elt);
+      if (el.checked) {
+        removeErrMsg(el);
         return true;
       }
-      setErrMsg(elt, radiosErrMsg);
+      setErrMsg(el, radiosErrMsg);
+      console.log('selector:', el);
+      el.parentElement.style.border = '1px solid red';
       return false;
     case 'date':
       return false;
@@ -265,20 +286,20 @@ function allIsValid(elt) {
 /**
  * It validates the value of an input element against a regular expression and displays an error
  * message if the value is invalid
- * @param   {HTMLElement} elt - The element to validate.
+ * @param   {HTMLElement} el- The element to validate.
  * @param   {String}  errMsg - The error message to display if the input is invalid.
  * @param   {RegExp}  regExp - The regular expression to test the value against.
  * @returns  {Boolean}  A boolean value.
  */
-function valid(elt, errMsg, regExp) {
-  const { value } = elt;
-  if (!notEmpty(elt)) return false;
+function valid(el, errMsg, regExp) {
+  const { value } = el;
+  if (!notEmpty(el)) return false;
   if (regExp) {
     if (testRegExp(value, regExp)) {
-      removeErrMsg(elt);
+      removeErrMsg(el);
       return true;
     }
-    setErrMsg(elt, errMsg);
+    setErrMsg(el, errMsg);
     return false;
   }
   return false;
@@ -356,6 +377,7 @@ function isSelected() {
   if (selected) {
     if (document.querySelector('#formRadio').nextSibling.nodeName === 'SMALL') {
       document.querySelector('#formRadio').nextSibling.remove();
+      document.querySelector('#formRadio').style.border = '';
     }
     return true;
   }
@@ -365,8 +387,10 @@ function isSelected() {
     document
       .querySelector('#formRadio')
       .insertAdjacentElement('afterend', errElt);
-    document.querySelector('#formRadio').nextSibling.style.fontSize = '1rem';
+    document.querySelector('#formRadio').nextSibling.style.fontSize = '.8rem';
     document.querySelector('#formRadio').nextSibling.style.color = 'red';
+    document.querySelector('#formRadio').style.border = '2px solid red';
+
     return false;
   }
   return selected;
@@ -419,8 +443,8 @@ document.addEventListener('submit', (ev) => {
 // const inputs = document.querySelectorAll('input');
 // for (let i = 0; i < inputs.length; i += 1) {
 //   inputs[i].addEventListener('input', (ev) => {
-//     const elt = ev.target;
-//     valid(elt);
+//     const el= ev.target;
+//     valid(el);
 //   });
 // }
 
