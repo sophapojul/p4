@@ -50,10 +50,11 @@ function editNav() {
   myTopnav.classList.toggle('responsive');
 }
 
-// icon.addEventListener('click', (event) => {
-//   event.stopPropagation();
-//   editNav();
-// });
+icon.addEventListener('click', (event) => {
+  event.preventDefault();
+  event.stopPropagation();
+  editNav();
+});
 /**
  * It takes an element as an argument, removes the active class from all of its siblings, and adds the
  * active class to itself
@@ -447,7 +448,7 @@ function validate() {
   );
   return validated;
 }
-document.querySelector('.main-navbar').addEventListener('click', editNav);
+// document.querySelector('.main-navbar').addEventListener('click', editNav);:46
 
 /* The above code is adding an event listener to each of the radio buttons. When the user presses the
 enter or space key, the radio button is checked. */
