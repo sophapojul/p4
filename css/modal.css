@@ -117,7 +117,8 @@ img {
   right: 0;
   z-index: 10;
   height: calc(100vh - 6rem);
-  background-color: rgba(120, 120, 120, 97%);
+  padding-bottom: 1rem;
+  background-color: rgba(50, 50, 50, 97%);
   border-radius: 0.5rem;
   overflow-y: auto;
 }

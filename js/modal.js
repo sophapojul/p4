@@ -1,23 +1,6 @@
-/* eslint-disable no-alert */
-function editNav() {
-  // ev.preventDefault();
-  const myTopnav = document.getElementById('myTopnav');
-  myTopnav.classList.toggle('responsive');
-}
-function setActive(el) {
-  [...el.parentElement.children].forEach((sib) =>
-    sib.classList.remove('active')
-  );
-
-  el.classList.add('active');
-}
-const myLinks = document.querySelectorAll('.main-navbar a+a');
-[...myLinks].forEach((el) => {
-  el.addEventListener('click', (e) => setActive(el));
-});
 // DOM Elements
-// const modalBtn = document.querySelectorAll('.modal-btn');
-// const formData = document.querySelectorAll('.formData');
+const icon = document.querySelector('.icon');
+const myLinks = document.querySelectorAll('.main-navbar a+a');
 const modalContent = document.querySelector('.modal-content');
 const modalClose = document.querySelector('.modal-close');
 const dialog = document.querySelector('#dialog');
@@ -59,6 +42,39 @@ let modal = null;
 let trig = null;
 
 /**
+ * The function is called when the user clicks on the hamburger icon. The function toggles the class of
+ * the navbar to responsive
+ */
+function editNav() {
+  const myTopnav = document.getElementById('myTopnav');
+  myTopnav.classList.toggle('responsive');
+}
+
+// icon.addEventListener('click', (event) => {
+//   event.stopPropagation();
+//   editNav();
+// });
+/**
+ * It takes an element as an argument, removes the active class from all of its siblings, and adds the
+ * active class to itself
+ * @param  el - the element that was clicked
+ */
+function setActive(el) {
+  [...el.parentElement.children].forEach((sib) => {
+    if (sib.classList.contains('active')) {
+      sib.classList.remove('active');
+    }
+  });
+  el.classList.add('active');
+}
+/* The above code is adding an event listener to each link in the navbar. When the link is clicked, the
+setActive function is called. */
+[...myLinks].forEach((el) => {
+  el.addEventListener('click', () => {
+    setActive(el);
+  });
+});
+/**
  * Stop the event from bubbling up the DOM tree.
  * @param   {Object}  e - The event object.
  */
@@ -66,6 +82,10 @@ function stopPropagation(e) {
   e.stopPropagation();
 }
 
+/**
+ * It removes the modal from the DOM and resets the modal variable to null
+ * @param el - The modal element
+ */
 function setToCloseModal(el) {
   el.style.display = 'none';
   el.setAttribute('aria-hidden', 'true');
@@ -427,6 +447,39 @@ function validate() {
   );
   return validated;
 }
+document.querySelector('.main-navbar').addEventListener('click', editNav);
+
+/* The above code is adding an event listener to each of the radio buttons. When the user presses the
+enter or space key, the radio button is checked. */
+Array.from(document.querySelectorAll('span[role="radio"]')).forEach(
+  (element) => {
+    element.addEventListener('keydown', (ev) => {
+      if (ev.code === 'Enter' || ev.code === 'Space') {
+        document.querySelector(
+          `input[value="${ev.target.ariaLabel}"]`
+        ).checked = true;
+      }
+    });
+  }
+);
+
+/* The above code is adding an event listener to each span element with the role of checkbox. The event
+listener is listening for the enter or space key to be pressed. If the enter or space key is
+pressed, the code will check the checkbox that is associated with the span element. */
+Array.from(document.querySelectorAll('span[role="checkbox"]')).forEach(
+  (element) => {
+    element.addEventListener('keydown', (ev) => {
+      if (ev.code === 'Enter' || ev.code === 'Space') {
+        const selected = ev.target.parentElement.previousElementSibling;
+        document.getElementById(`${selected.id}`).checked = true;
+        ev.target.setAttribute('aria-checked', 'true');
+      }
+    });
+  }
+);
+
+/* The above code is listening for a submit event on the form. If the form is valid, it will send the
+form data to the console. If the form is not valid, it will prevent the form from submitting. */
 document.addEventListener('submit', (ev) => {
   const successModal = document.querySelector('#successModal');
   if (!validate()) {

@@ -22,12 +22,7 @@
         <img alt="logo" src="./assets/img/Logo.png" width="250" height="45" />
       </div>
       <div class="main-navbar">
-        <a
-          href="javascript:void(0);"
-          class="icon"
-          onclick="editNav()"
-          title="Ouvrir le menu"
-        >
+        <a href="javascript:void(0);" class="icon">
           <i class="fa fa-bars"></i>
         </a>
         <a href="#" class="active"><span>Accueil</span></a>
@@ -288,7 +283,12 @@
                   name="checkbox"
                 />
                 <label class="checkbox2-label" for="checkbox1">
-                  <span class="checkbox-icon" tabindex="0"></span>
+                  <span
+                    class="checkbox-icon"
+                    aria-checked="false"
+                    role="checkbox"
+                    tabindex="0"
+                  ></span>
                   J'ai lu et accepté les conditions d'utilisation.
                 </label>
                 <br />
@@ -299,7 +299,12 @@
                   name="checkbox"
                 />
                 <label class="checkbox2-label" for="checkbox2">
-                  <span class="checkbox-icon" tabindex="0"></span>
+                  <span
+                    class="checkbox-icon"
+                    aria-checked="false"
+                    role="checkbox"
+                    tabindex="0"
+                  ></span>
                   Je souhaite être prévenu des prochains évènements.
                 </label>
                 <br />
