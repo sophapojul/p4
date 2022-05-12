@@ -494,7 +494,8 @@ document.addEventListener('submit', (ev) => {
   }
   // ev.target.submit();
 });
-// const inputs = document.querySelectorAll('input');
+// const inputs = document.querySelectorAll('#reserve input');
+// const iinp = document.querySelector('#reserve').elements / Object HTMLFormControlsCollection / Array.from()
 // for (let i = 0; i < inputs.length; i += 1) {
 //   inputs[i].addEventListener('input', (ev) => {
 //     const el= ev.target;
