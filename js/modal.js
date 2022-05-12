@@ -50,9 +50,7 @@ function editNav() {
   myTopnav.classList.toggle('responsive');
 }
 
-icon.addEventListener('click', (event) => {
-  event.preventDefault();
-  event.stopPropagation();
+icon.addEventListener('click', () => {
   editNav();
 });
 /**
@@ -307,7 +305,7 @@ function allIsValid(el) {
 /**
  * It validates the value of an input element against a regular expression and displays an error
  * message if the value is invalid
- * @param   {HTMLElement} el- The element to validate.
+ * @param   {HTMLElement} el - The element to validate.
  * @param   {String}  errMsg - The error message to display if the input is invalid.
  * @param   {RegExp}  regExp - The regular expression to test the value against.
  * @returns  {Boolean}  A boolean value.
