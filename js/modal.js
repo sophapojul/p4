@@ -457,7 +457,7 @@ Array.from(document.querySelectorAll('span[role="radio"]')).forEach(
     element.addEventListener('keydown', (ev) => {
       if (ev.code === 'Enter' || ev.code === 'Space') {
         document.querySelector(
-          `input[value="${ev.target.ariaLabel}"]`
+          `input[value="${document.activeElement.getAttribute('aria-label')}"]`
         ).checked = true;
       }
     });
@@ -472,8 +472,8 @@ Array.from(document.querySelectorAll('span[role="checkbox"]')).forEach(
     element.addEventListener('keydown', (ev) => {
       if (ev.code === 'Enter' || ev.code === 'Space') {
         const selected = ev.target.parentElement.previousElementSibling;
-        document.getElementById(`${selected.id}`).checked = true;
-        ev.target.setAttribute('aria-checked', 'true');
+        document.getElementById(`${selected.id}`).checked ^= 1;
+        ev.target.setAttribute('aria-checked', String(!selected));
       }
     });
   }
