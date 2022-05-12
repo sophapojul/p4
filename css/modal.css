@@ -105,7 +105,8 @@ img {
   align-self: end;
 }
 
-.topnav a.icon:hover {
+.topnav a.icon:hover,
+.topnav a.icon:focus {
   border-radius: 0.5rem;
   color: white;
 }
