@@ -1,45 +1,74 @@
-// DOM Elements
+/* eslint-disable consistent-return */
+/* eslint-disable func-names */
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const icon = document.querySelector('.icon');
+/**
+ * @const
+ * @type  {NodeList}
+ */
 const myLinks = document.querySelectorAll('.main-navbar a+a');
-const modalContent = document.querySelector('.modal-content');
-const modalClose = document.querySelector('.modal-close');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const dialog = document.querySelector('#dialog');
+/**
+ * The above code is selecting the element with the id of reserve.
+ *
+ * @const  {HTMLFormElement}  reserve  inscription form
+ */
 const reserve = document.querySelector('#reserve');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const first = document.querySelector('#first');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const last = document.querySelector('#last');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const email = document.querySelector('#email');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const birthdate = document.querySelector('#birthdate');
+/**
+ * @const
+ * @type  {HTMLInputElement}
+ */
 const quantity = document.querySelector('#quantity');
-const radioGroup = document.querySelector('#formRadio');
-const checkboxGroup = document.querySelector('#formMentions');
 
-const emptyMsg = 'Le champ ne peut-être vide.';
+const textRegExp = /^(?=.{2,30}$)[\p{L}]+(?:['\-\s][p{L}]+)*$/iu;
+const emailRegExp = /^[\w][\w.-]+[@]{1}[\w.-]+[.]{1}[a-zA-Z]{2,3}$/i;
+const numberRegExp = /^(0?\d|[1-9]\d)$/;
+const emptyErrMsg = 'Le champ ne peut-être vide.';
 const textErrMsg =
-  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe.';
-const firstErrMsg =
-  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe " \' ".';
-const lastErrMsg =
-  'Le champ doit contenir au moins 2 caractères alphabétiques non accentués et si besoin un trait d\'union " - " ou une apostrophe.';
+  "Le champ doit contenir au moins 2 caractères alphabétiques, ne pas avoir d'espace en début et fin de saisie et si besoin un trait d'union - ou une apostrophe ' ou un espace .";
 const emailErrMsg = 'Le champ doit contenir une adresse mail valide.';
-const birthdateErrMsg =
-  'Le champ doit contenir une date valide, inférieure à 2013.';
-const quantityErrMsg =
+const dateErrMsg =
+  'Le champ doit contenir une date valide et vous devez avoir 12 ans.';
+const numberErrMsg =
   'Vous devez saisir un nombre entier positif inférieur à 100.';
 const radiosErrMsg = 'Vous devez choisir une ville.';
 const cguErrMsg =
   "Vous devez avoir lu et accepté les conditions d'utilisations.";
 
-const firstRegExp = /^[-a-zA-Z']{2,20}$/i;
-const lastRegExp = /^[-a-zA-Z'\s]{2,20}$/i;
-const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;
-const birthdateRegExp = /^(190[0-9]|19[1-9][0-9]|200[0-9]|201[0-2])/;
-const quantityRegExp = /^(0?\d|[1-9]\d)$/;
+// const emailRegExp = /^\w+([.-_]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;d
 
 const triggers = document.querySelectorAll('[aria-haspopup="dialog"]');
 const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
 
 let modal = null;
-let trig = null;
+let previousActiveElement = null;
 
 /**
  * The function is called when the user clicks on the hamburger icon. The function toggles the class of
@@ -50,9 +79,7 @@ function editNav() {
   myTopnav.classList.toggle('responsive');
 }
 
-icon.addEventListener('click', () => {
-  editNav();
-});
+icon.addEventListener('click', editNav);
 /**
  * It takes an element as an argument, removes the active class from all of its siblings, and adds the
  * active class to itself
@@ -73,69 +100,145 @@ setActive function is called. */
     setActive(el);
   });
 });
-/**
- * Stop the event from bubbling up the DOM tree.
- * @param   {Object}  e - The event object.
- */
-function stopPropagation(e) {
-  e.stopPropagation();
-}
 
 /**
- * It removes the modal from the DOM and resets the modal variable to null
- * @param el - The modal element
+ * It traps the focus inside the dialog box
+ * @param  {HTMLElement} el - The element that will be focused on when the dialog is opened.
  */
-function setToCloseModal(el) {
-  el.style.display = 'none';
-  el.setAttribute('aria-hidden', 'true');
-  el.removeAttribute('aria-modal');
-  el.removeEventListener('click', closeModal);
-  modalClose.removeEventListener('click', closeModal);
-  modalContent.removeEventListener('click', stopPropagation);
+function trapFocus(el) {
+  /**
+   * [firstFocusableElt description]
+   * @let focusableElts
+   * @type {Array}
+   */
+  const focusableElts = Array.from(
+    el.querySelectorAll(
+      'input,span[role=radio],span[role=checkbox],button[type=submit],button[data-dismiss=dialog],span[data-dismiss="dialog"]'
+    )
+  );
+  /**
+   * [firstFocusableElt description]
+   * @let firstFocusableElt
+   * @type {HTMLElement}
+   */
+  const firstFocusableElt = focusableElts[0];
+  /**
+   * [firstFocusableElt description]
+   * @let lastFocusableElt
+   * @type {HTMLElement}
+   */
+  const lastFocusableElt = focusableElts[focusableElts.length - 1];
+  const KEYCODE_TAB = '9';
+  el.addEventListener('keydown', (ev) => {
+    const isTabPressed = ev.key === 'Tab' || ev.code === KEYCODE_TAB;
+
+    if (!isTabPressed) {
+      return;
+    }
+
+    if (ev.shiftKey) {
+      /* shift + tab */ if (document.activeElement === firstFocusableElt) {
+        lastFocusableElt.focus();
+        ev.preventDefault();
+      }
+    } /* tab */ else if (document.activeElement === lastFocusableElt) {
+      firstFocusableElt.focus();
+      ev.preventDefault();
+    }
+  });
+}
+/**
+ * It closes the modal
+ * @param   {Event}  ev - the event object
+ * @returns The function closeModal is being returned.
+ */
+function closeModal(ev) {
+  if (!modal) return;
+  ev.preventDefault();
+  // eslint-disable-next-line no-use-before-define
+  Array.from(document.querySelector('#myTopnav').children).forEach((child) =>
+    child.removeAttribute('inert')
+  );
+  Array.from(document.querySelector('main').children).forEach(
+    /**
+     * @type {function}
+     * @param  {Element} child
+     */
+    (child) => {
+      if (child !== modal) {
+        child.removeAttribute('inert');
+      }
+    }
+  );
+  modal.removeAttribute('style');
+  modal.setAttribute('aria-hidden', 'true');
+  modal.removeAttribute('aria-modal');
+  modal.removeEventListener('click', closeModal);
+  modal
+    .querySelector('span[data-dismiss="dialog"]')
+    .removeEventListener('click', closeModal);
+  modal.lastElementChild.removeEventListener('click', closeModal);
+  // eslint-disable-next-line no-use-before-define
+  document.removeEventListener('keydown', checkCloseModal);
+  // restoring focus
+  previousActiveElement.focus();
   modal = null;
 }
 
-function setToOpenModal(el) {
-  el.style.display = 'block';
-  el.removeAttribute('aria-hidden');
-  el.setAttribute('aria-modal', 'true');
-  el.addEventListener('click', closeModal);
-  modalClose.addEventListener('click', closeModal);
-  modalContent.addEventListener('click', stopPropagation);
-  modal = el;
-}
-
-/**
- * It closes the modal
- * @param   {Object}  ev - the event object
- * @returns The function closeModal is being returned.
- */
-const closeModal = (ev) => {
-  if (!modal) return;
-  ev.preventDefault();
-  setToCloseModal(modal);
-  // restoring focus
-  trig.focus();
-};
-
-/* The above code is listening for a keydown event. If the key pressed is the escape key, the
-closeModal function is called. */
-window.addEventListener('keydown', (ev) => {
-  if (ev.key === 'Escape') {
+function checkCloseModal(ev) {
+  if (ev.key === 'Enter' && ev.target.type === 'submit') {
+    // ev.preventDefault();
+    // document.querySelector('#reserve').submit();
+    ev.target.click();
+  }
+  if (ev.key === 'Escape' || ev.key === 'Enter') {
     closeModal(ev);
   }
-});
+}
+/**
+ * It sets the modal to open
+ * @param  {HTMLElement} el - the modal element
+ */
+function setToOpenModal(el) {
+  Array.from(document.querySelector('#myTopnav').children).forEach((child) =>
+    child.setAttribute('inert', 'true')
+  );
+  Array.from(document.querySelector('main').children).forEach(
+    /**
+     * @type {function(Element)}
+     */
+    (child) => {
+      if (child !== el) child.setAttribute('inert', 'true'); // child.inert = true;
+    }
+  );
+  el.setAttribute('style', 'display: block');
+  el.removeAttribute('aria-hidden');
+  el.setAttribute('aria-modal', 'true');
+  el.querySelectorAll('[data-dismiss="dialog"]').forEach((elt) =>
+    elt.addEventListener('click', closeModal)
+  );
+  el.lastElementChild.addEventListener('click', closeModal);
+  document.addEventListener('keydown', checkCloseModal);
+  trapFocus(el);
+  modal = el;
+}
 /**
  * If there is no modal open, set the modal to the element that was clicked on and set the trigger to
  * the element that was clicked on.
- * @param   {Object}  ev - the event object
+ * @param   {Event}  ev - the event object
  */
 const openModal = (ev) => {
   ev.preventDefault();
-  const el = document.getElementById(ev.target.getAttribute('aria-haspopup'));
+  /**
+   * @const btn
+   * @type {EventTarget}
+   */
+  const btn = ev.target;
+  // @ts-ignore
+  const el = document.getElementById(btn.getAttribute('aria-haspopup'));
   if (!modal) {
+    previousActiveElement = document.activeElement;
     setToOpenModal(el);
-    trig = ev.target;
   }
 };
 
@@ -143,11 +246,17 @@ const openModal = (ev) => {
  * It adds an event listener to each trigger element, which opens the modal when the trigger is clicked or Enter is pressed, which closes the modal when the trigger is clicked or Escape is pressed.
  */
 triggers.forEach((trigger) => {
-  trigger.addEventListener('click', (ev) => {
-    ev.preventDefault();
-    openModal(ev);
-  });
+  /**
+   * The above code is adding an event listener to the trigger element. When the trigger element is
+  clicked, the openModal function is called.
+   *
+   * @param   {String}  click
+   * @param   {PointerEvent|KeyboardEvent}  ev
+   *
+   */
+  trigger.addEventListener('click', openModal);
   trigger.addEventListener('keydown', (ev) => {
+    // @ts-ignore
     if (ev.key === 'Enter') {
       ev.preventDefault();
       openModal(ev);
@@ -155,43 +264,49 @@ triggers.forEach((trigger) => {
   });
   /* Closing the modal when the user clicks on the button. */
   dismissTriggers.forEach((dismissTrigger) => {
-    dismissTrigger.addEventListener('click', (ev) => {
-      ev.preventDefault();
-      closeModal(ev);
-    });
+    dismissTrigger.addEventListener('click', closeModal);
   });
 });
 /**
  * It adds an error message to the form field if it doesn't already have one
- * @param {HTMLElement} el- the element that triggered the event
+ * @param {HTMLInputElement} el - the element that triggered the event
  * @param {String} message - the error message to display
  * @returns the value of the variable eltLastChild.
  */
 function setErrMsg(el, message) {
   const eltLastChild = el.parentElement.lastChild;
   // test présence d'un message d'erreur
-  if (eltLastChild.nodeName === 'SMALL') {
+  if (
+    eltLastChild.nodeName === 'SMALL' &&
+    eltLastChild.textContent === message
+  ) {
     return;
   } // sinon création du message d'erreur :
   // création de l'élément contenant le message
+  eltLastChild.textContent = '';
   const errElt = document.createElement('small');
   // ajout du message à l'élément créé
   errElt.textContent = message; // 'Votre prénom doit contenir au moins 2 lettres';
   errElt.style.color = 'red';
   el.parentElement.insertAdjacentElement('beforeend', errElt);
   // ajout de la classe invalid au parent
+  el.parentElement.classList.remove('valid');
   el.parentElement.classList.add('invalid');
-  if (el.type === 'checkbox') {
-    document.querySelector(
-      '#checkbox1'
-    ).nextElementSibling.firstElementChild.style.border = '2px solid red';
+  if (el.getAttribute('type') === 'checkbox') {
+    document
+      .querySelector('#checkbox1')
+      .nextElementSibling.firstElementChild.setAttribute(
+        'style',
+        'border:2px solid red;'
+      );
   }
 }
+// TODO set valid message and delete previous message
 
 /**
  * It removes the error message and replaces the class `invalid` by the class `valid` on the parent
  * element of the element passed as argument
- * @param {HTMLElement} el - the element that triggered the event
+ * @param {HTMLInputElement} el - the element that triggered the event
  */
 function removeErrMsg(el) {
   const eltLastChild = el.parentElement.lastChild;
@@ -202,83 +317,109 @@ function removeErrMsg(el) {
     // remplacement de la classe invalid par la classe valid sur le parent
     el.parentElement.classList.remove('invalid');
     el.parentElement.classList.add('valid');
-    if (el.type === 'checkbox') {
-      document.querySelector(
-        '#checkbox1'
-      ).nextElementSibling.firstElementChild.style.border = '';
+    if (el.getAttribute('type') === 'checkbox') {
+      document
+        .querySelector('#checkbox1')
+        .nextElementSibling.firstElementChild.removeAttribute('style');
     }
   }
+  el.parentElement.classList.add('valid');
 }
 
 /**
  * It takes a value and a regular expression and returns true if the value matches the regular
  * expression
- * @param value - The value to test.
- * @param regExp - The regular expression to test against.
+ * @param {HTMLInputElement}el - The value to test.
+ * @param {RegExp} regExp - The regular expression to test against.
  * @returns true or false
  */
-function testRegExp(value, regExp) {
-  const testedValue = regExp.test(value);
+function testRegExp(el, regExp) {
+  const testedValue = regExp.test(el.value.trim());
   return !!testedValue;
 }
 
-function notNull(selector) {
-  // if (selector === null) {
-  //   return false;
-  // }
-  // return true;
-  return selector !== null;
+/**
+ * If the selector is not null, return true.
+ * @param   {HTMLInputElement} el - The selector to check.
+ * @returns   {Boolean} A boolean value.
+ */
+function notNull(el) {
+  return el !== null;
 }
 
 /**
  * If the input is not empty, remove the error message and return true, otherwise set the error message
  * and return false
- * @param selector - The input element that is being validated.
- * @returns A boolean value.
+ * @param  {HTMLInputElement} elt - The input element that is being validated.
+ * @returns  {Boolean} A boolean value.
  */
-function notEmpty(selector) {
-  if (!notNull(selector)) {
-    return;
-  }
-  const dataLength = selector.value.length;
-  switch (selector.getAttribute('type')) {
+function notEmpty(elt) {
+  const el = elt;
+  // const dataLength = el.value.trim().length;
+  switch (el.getAttribute('type')) {
     case 'text':
     case 'email':
     case 'number':
-      if (dataLength > 0) {
-        removeErrMsg(selector);
-        return true;
-      }
-      setErrMsg(selector, emptyMsg);
-      return false;
     case 'date':
-      if (new Date(selector.value).toString() === 'Invalid Date') {
-        setErrMsg(selector, birthdateErrMsg);
-        return false;
-      }
-      return true;
-    case 'radio':
-    case 'checkbox':
-      if (selector.checked) {
-        removeErrMsg(selector);
+      if (el.value) {
+        removeErrMsg(el);
         return true;
       }
-      setErrMsg(selector, emptyMsg);
-      console.log('selector:', selector);
-      selector.parentElement.style.border = '1px solid red';
+      setErrMsg(el, emptyErrMsg);
       return false;
     default:
-      return false;
+      return true;
   }
 }
 
-function allIsValid(el) {
+/**
+ * It checks if the input is valid, and if it is, it removes the error message, otherwise it sets the
+ * error message
+ * @param  {HTMLInputElement} elt - the element to check
+ * @returns   {Boolean} A boolean value.
+ */
+function valid(elt) {
+  const el = elt;
+  const age = new Date().getFullYear() - new Date(el.value).getFullYear();
+  // TODO check once notNull and notEmpty cf inputValid
   if (!notNull(el) || !notEmpty(el)) {
-    setErrMsg(el, emptyMsg);
+    setErrMsg(el, emptyErrMsg);
     return false;
   }
+  // TODO check message
   removeErrMsg(el);
   switch (el.type) {
+    case 'text':
+      if (testRegExp(el, textRegExp)) {
+        removeErrMsg(el);
+        return true;
+      }
+      setErrMsg(el, textErrMsg);
+      return false;
+    case 'email':
+      if (testRegExp(el, emailRegExp)) {
+        removeErrMsg(el);
+        return true;
+      }
+      setErrMsg(el, emailErrMsg);
+      return false;
+    case 'date':
+      if (
+        new Date(el.value).toString() === 'Invalid Date' ||
+        new Date(el.value).getFullYear() < 1900 ||
+        age < 12
+      ) {
+        setErrMsg(el, dateErrMsg);
+        return false;
+      }
+      return true;
+    case 'number':
+      if (testRegExp(el, numberRegExp)) {
+        removeErrMsg(el);
+        return true;
+      }
+      setErrMsg(el, numberErrMsg);
+      return false;
     case 'checkbox':
       if (el.checked) {
         removeErrMsg(el);
@@ -292,10 +433,7 @@ function allIsValid(el) {
         return true;
       }
       setErrMsg(el, radiosErrMsg);
-      console.log('selector:', el);
       el.parentElement.style.border = '1px solid red';
-      return false;
-    case 'date':
       return false;
     default:
       return false;
@@ -303,100 +441,60 @@ function allIsValid(el) {
 }
 
 /**
- * It validates the value of an input element against a regular expression and displays an error
- * message if the value is invalid
- * @param   {HTMLElement} el - The element to validate.
- * @param   {String}  errMsg - The error message to display if the input is invalid.
- * @param   {RegExp}  regExp - The regular expression to test the value against.
- * @returns  {Boolean}  A boolean value.
- */
-function valid(el, errMsg, regExp) {
-  const { value } = el;
-  if (!notEmpty(el)) return false;
-  if (regExp) {
-    if (testRegExp(value, regExp)) {
-      removeErrMsg(el);
-      return true;
-    }
-    setErrMsg(el, errMsg);
-    return false;
-  }
-  return false;
-}
-
-/**
  * If the first name field is not empty, then validate it
- * @returns The function firstValid() is being returned.
+ * @returns  {Boolean} The function firstValid() is being returned.
  */
 function firstValid() {
-  if (notEmpty(first)) {
-    return valid(first, firstErrMsg, firstRegExp);
-  }
-  return false;
+  // @ts-ignore
+  return valid(first);
 }
 
 /**
  * If the last name is not empty, then validate it
- * @returns The function lastValid() is being returned.
+ * @returns  {Boolean} The function lastValid() is being returned.
  */
 function lastValid() {
-  if (notEmpty(last)) {
-    return valid(last, lastErrMsg, lastRegExp);
-  }
-  return false;
+  // @ts-ignore
+  return valid(last);
 }
 
 /**
  * If the email field is not empty, then validate it
- * @returns a boolean value.
+ * @returns  {Boolean} a boolean value.
  */
 function emailValid() {
-  if (notEmpty(email)) {
-    return valid(email, emailErrMsg, emailRegExp);
-  }
-  return false;
+  // @ts-ignore
+  return valid(email);
 }
 
 /**
- * If the birthdate field is not empty, check if the length of the value is not equal to 10 or if the
- * date is invalid. If either of those are true, set the error message and return false. Otherwise,
- * return the result of the valid function
- * @returns A boolean value.
+ * It checks if the birthdate input is not empty, and if it's not, it checks if the date is valid. If
+ * it is, it checks if the date is in the correct format
+ * @returns  {Boolean} A boolean value.
  */
 function birthdateValid() {
-  const toTestDate = new Date(birthdate.value);
-  if (notEmpty(birthdate)) {
-    if (toTestDate.toString() === 'Invalid Date') {
-      setErrMsg(birthdate, birthdateErrMsg);
-
-      return false;
-    }
-    return valid(birthdate, birthdateErrMsg, birthdateRegExp);
-  }
-  return false;
+  // @ts-ignore
+  return valid(birthdate);
 }
 
 /**
  * If the quantity field is not empty, then validate it using the regular expression.
- * @returns the value of the function valid.
+ * @returns  {Boolean} the value of the function valid.
  */
 function quantityValid() {
-  if (notEmpty(quantity)) {
-    return valid(quantity, quantityErrMsg, quantityRegExp);
-  }
-  return false;
+  // @ts-ignore
+  return valid(quantity);
 }
 
 /**
  * It checks if a radio button is selected, and if not, it displays an error message
- * @returns A boolean value.
  */
 function isSelected() {
   const selected = document.querySelector('input[name="location"]:checked');
   if (selected) {
     if (document.querySelector('#formRadio').nextSibling.nodeName === 'SMALL') {
       document.querySelector('#formRadio').nextSibling.remove();
-      document.querySelector('#formRadio').style.border = '';
+      document.querySelector('#formRadio').removeAttribute('style');
     }
     return true;
   }
@@ -406,13 +504,15 @@ function isSelected() {
     document
       .querySelector('#formRadio')
       .insertAdjacentElement('afterend', errElt);
+    // @ts-ignore
     document.querySelector('#formRadio').nextSibling.style.fontSize = '.8rem';
+    // @ts-ignore
     document.querySelector('#formRadio').nextSibling.style.color = 'red';
+    // @ts-ignore
     document.querySelector('#formRadio').style.border = '2px solid red';
 
     return false;
   }
-  return selected;
 }
 
 /**
@@ -421,6 +521,10 @@ function isSelected() {
  * @returns {Boolean} A boolean value.
  */
 function cguChecked() {
+  /**
+   *@const cgu - a node
+   *@type  {HTMLInputElement}
+   */
   const cgu = document.querySelector('#checkbox1');
   if (!cgu.checked) {
     setErrMsg(cgu, cguErrMsg);
@@ -446,17 +550,68 @@ function validate() {
   );
   return validated;
 }
-// document.querySelector('.main-navbar').addEventListener('click', editNav);:46
 
+/**
+ * It creates a modal window with a success message and displays it
+ * @param   {String} firstname - the first name of the user
+ * @param   {String} lastname - the last name of the user
+ */
+function displaySuccessModal(firstname, lastname) {
+  /**
+   * @const
+   * @type {HTMLElement}
+   */
+  const div = document.createElement('div');
+  div.setAttribute('id', 'successModal');
+  div.setAttribute('class', 'modal, successModal');
+  div.setAttribute('role', 'dialog');
+  div.innerHTML = `
+    <div class="modal-content" role="document">
+      <span
+        tabindex="0"
+        role="button"
+        id="dismissSuccessModal"
+        class="modal-close"
+        aria-label="Fermer la fenêtre modale"
+        title="Fermer la fenêtre modale"
+        data-dismiss="dialog"
+      ></span>
+      <div class="modal-body">
+        <h3>Merci pour votre inscription ! <span>${firstname} ${lastname}</span></h3>
+        <button class="button" data-dismiss="dialog">Fermer</button>
+      </div>
+    </div>
+    <div class="modal-mask"></div>
+  `;
+  document.querySelector('main').appendChild(div);
+  /**
+   * @const
+   * @type  {HTMLElement}
+   */
+  const successModal = document.querySelector('#successModal');
+  setToOpenModal(successModal);
+}
 /* The above code is adding an event listener to each of the radio buttons. When the user presses the
 enter or space key, the radio button is checked. */
 Array.from(document.querySelectorAll('span[role="radio"]')).forEach(
   (element) => {
     element.addEventListener('keydown', (ev) => {
+      // @ts-ignore
       if (ev.code === 'Enter' || ev.code === 'Space') {
         document.querySelector(
           `input[value="${document.activeElement.getAttribute('aria-label')}"]`
+          // @ts-ignore
         ).checked = true;
+        document
+          .querySelector(
+            `input[value="${document.activeElement.getAttribute(
+              'aria-label'
+            )}"]`
+          )
+          .nextElementSibling.firstElementChild.setAttribute(
+            'aria-checked',
+            'true'
+          );
       }
     });
   }
@@ -465,81 +620,59 @@ Array.from(document.querySelectorAll('span[role="radio"]')).forEach(
 /* The above code is adding an event listener to each span element with the role of checkbox. The event
 listener is listening for the enter or space key to be pressed. If the enter or space key is
 pressed, the code will check the checkbox that is associated with the span element. */
-Array.from(document.querySelectorAll('span[role="checkbox"]')).forEach(
-  (element) => {
-    element.addEventListener('keydown', (ev) => {
-      if (ev.code === 'Enter' || ev.code === 'Space') {
-        const selected = ev.target.parentElement.previousElementSibling;
-        document.getElementById(`${selected.id}`).checked ^= 1;
-        ev.target.setAttribute('aria-checked', String(!selected));
-      }
-    });
-  }
-);
+document.querySelectorAll('span[role="checkbox"]').forEach((element) => {
+  element.addEventListener('keydown', function (ev) {
+    // @ts-ignore
+    if (ev.code === 'Enter' || ev.code === 'Space') {
+      const selected = this.parentElement.previousElementSibling;
+      /**
+       * @const
+       * @type  {HTMLInputElement}
+       */
+      // @ts-ignore
+      const elt = document.getElementById(`${selected.id}`);
+      elt.checked = !elt.checked;
+      this.setAttribute('aria-checked', String(!selected));
+    }
+  });
+});
 
-/* The above code is listening for a submit event on the form. If the form is valid, it will send the
-form data to the console. If the form is not valid, it will prevent the form from submitting. */
-document.addEventListener('submit', (ev) => {
-  const successModal = document.querySelector('#successModal');
+/* Adding an event listener to each input element with the form attribute of "reserve" and calling the
+valid function on each change. */
+/**
+ *
+ * @param   {HTMLInputElement}  el
+ *
+ */
+document.querySelectorAll('input[form="reserve"]').forEach((el) => {
+  // @ts-ignore
+  el.addEventListener('change', () => valid(el));
+});
+
+/**
+ * The above code is listening for a submit event on the form. If the form is valid, it will send the
+form data to the console. If the form is not valid, it will prevent the form from submitting.
+ *
+ * @param   {String}  submit  [submit description]
+ * @param   {SubmitEvent}  ev      [ev description]
+ *
+ */
+reserve.addEventListener('submit', function (ev) {
   if (!validate()) {
     ev.preventDefault();
   } else {
+    const data = Object.fromEntries(new FormData(this));
+    // eslint-disable-next-line no-console
+    console.table(data);
+    // new Response(new FormData(reserve)).text().then(console.log);
     // send form by Ajax
-    console.table([...new FormData(reserve).entries()]);
+    // @ts-ignore
     reserve.reset();
+    document
+      .querySelectorAll('.formData')
+      .forEach((div) => div.classList.remove('valid'));
     closeModal(ev);
-    setToOpenModal(successModal);
+    // @ts-ignore
+    displaySuccessModal(data.first, data.last);
   }
-  // ev.target.submit();
 });
-// const inputs = document.querySelectorAll('#reserve input');
-// const iinp = document.querySelector('#reserve').elements / Object HTMLFormControlsCollection / Array.from()
-// for (let i = 0; i < inputs.length; i += 1) {
-//   inputs[i].addEventListener('input', (ev) => {
-//     const el= ev.target;
-//     valid(el);
-//   });
-// }
-
-/* The above code is adding an event listener to the first input field. When the input field is
-changed, the firstValid() function is called. */
-first.addEventListener('change', () => {
-  firstValid();
-});
-
-/* The above code is adding an event listener to the last input field. When the last input field is
-changed, the lastValid() function is called. */
-last.addEventListener('change', () => {
-  lastValid();
-});
-
-/* The above code is adding an event listener to the email input field. When the user changes the value
-of the email input field, the emailValid() function is called. */
-email.addEventListener('change', () => {
-  emailValid();
-});
-
-/* The above code is adding an event listener to the birthdate input field. When the user changes the
-value of the input field, the birthdateValid() function is called. */
-birthdate.addEventListener('change', () => {
-  birthdateValid();
-});
-
-/* The above code is adding an event listener to the quantity input field. When the quantity input
-field changes, the quantityValid() function is called. */
-quantity.addEventListener('change', () => {
-  quantityValid();
-});
-
-/* The above code is adding an event listener to the radioGroup variable. The event listener is
-listening for an input event. When the input event is triggered, the isSelected function is called. */
-radioGroup.addEventListener('change', () => {
-  isSelected();
-});
-
-/* Adding an event listener to the checkbox group. */
-checkboxGroup.addEventListener('change', () => {
-  cguChecked();
-});
-
-// document.addEventListener('DOMContentLoaded', () => {});

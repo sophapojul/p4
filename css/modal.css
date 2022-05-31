@@ -26,9 +26,9 @@ a {
   text-decoration: none;
 }
 
-button {
+/* button {
   border: 0;
-}
+} */
 
 ul {
   list-style: none;
@@ -143,7 +143,7 @@ main {
   border-radius: 2rem;
 }
 
-.modal-btn {
+/* .modal-btn {
   font-size: 145%;
   background: #fe142f;
   display: flex;
@@ -153,7 +153,7 @@ main {
   padding: 0.75rem 2.5rem;
   border-radius: 1rem;
   cursor: pointer;
-}
+} */
 
 .modal-btn:hover {
   background: #3876ac;
@@ -163,49 +163,6 @@ main {
   margin: 20px;
   padding: 10px;
   font-family: var(--font-slab);
-}
-
-#successModal .modal-content {
-  margin: 3% auto;
-  animation-name: modalopen;
-  animation-duration: var(--modal-duration);
-  background: #232323;
-  border-radius: 10px;
-  overflow: hidden;
-  position: absolute;
-  top: 4rem;
-  left: 0;
-  right: 0;
-  z-index: 5;
-  color: #fff;
-  padding-top: 10px;
-  width: 100%;
-  max-width: 500px;
-  height: 100%;
-  max-height: 600px;
-}
-
-#successModal .modal-body {
-  height: 100%;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
-
-#successModal h1 {
-  max-width: 85%;
-  font-size: 2rem;
-  text-align: center;
-  margin-top: auto;
-}
-
-#successModal button {
-  margin-top: auto;
-  margin-bottom: 20px;
-}
-
-.successModal:target {
-  display: block;
 }
 
 /* Modal form */
@@ -224,38 +181,62 @@ main {
   background: #3876ac;
 }
 
-.smFont {
-  font-size: 16px;
-}
-
 .modal {
   display: none;
-  position: fixed;
+  /* position: fixed;
   z-index: 1;
   left: 0;
   top: 0;
   height: 100%;
   width: 100%;
   overflow: auto;
-  background-color: rgba(26, 39, 156, 0.4);
+  background-color: rgba(26, 39, 156, 0.4); */
+}
+
+.modal-header {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin: 1rem;
+}
+
+.modal-header h2 {
+  margin: 1rem;
+  font-size: 1.2em;
+  display: none;
 }
 
 .modal-content {
-  margin: 3% auto;
+  margin: 2.5% auto;
   width: 100%;
   max-width: 500px;
-  animation-name: modalopen;
-  animation-duration: var(--modal-duration);
+  height: fit-content;
+  /* margin: .5rem auto; */
+  padding-top: 10px;
   background: #232323;
-  border-radius: 10px;
+  border-radius: 8px 8px 0 0;
+  box-shadow: 8px 12px 12px rgba(0, 0, 0, 0.25);
+  z-index: 11;
   position: absolute;
-  top: 4rem;
+  top: 7rem;
   left: 0;
   right: 0;
+  bottom: 0;
   color: #fff;
-  padding-top: 10px;
+  animation-name: modalopen;
+  animation-duration: var(--modal-duration);
 }
 
+.modal-mask {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  z-index: 10;
+  overflow: auto;
+  background-color: rgba(26, 39, 156, 0.4);
+}
 .modal-body {
   padding: 15px 8%;
   margin: 15px auto;
@@ -320,13 +301,13 @@ input {
 }
 .formData[data-error]::after {
   content: attr(data-error);
-  font-size: 0.4em;
+  font-size: 0.6em;
   color: #e54858;
   display: block;
   margin-top: 7px;
   margin-bottom: 7px;
-  text-align: right;
-  line-height: 0.3;
+  text-align: left;
+  line-height: 1.3;
   opacity: 0;
   transition: 0.3s;
 }
@@ -336,12 +317,15 @@ input {
 .formData[data-error-visible='true'] .text-control {
   border: 2px solid #e54858;
 }
-/* 
+
 input[data-error]::after {
-    content: attr(data-error);
-    font-size: 0.4em;
-    color: red;
-} */
+  content: attr(data-error);
+  font-size: 0.6em;
+  color: red;
+}
+.checkbox-input {
+  display: none;
+}
 .checkbox-label,
 .checkbox2-label {
   position: relative;
@@ -354,14 +338,25 @@ input[data-error]::after {
   display: block;
   width: 20px;
   height: 20px;
-  border: 2px solid #279e7a;
   border-radius: 50%;
-  text-indent: 29px;
+  /* text-indent: 29px; */
   white-space: nowrap;
   position: absolute;
   left: -30px;
   top: -1px;
   transition: 0.3s;
+}
+.checkbox-label .checkbox-icon {
+  outline: thin solid;
+}
+.checkbox-label .checkbox-icon:focus,
+.checkbox-input:checked + .checkbox-label .checkbox-icon:focus {
+  outline: auto;
+}
+.checkbox2-label .checkbox-icon {
+  border-radius: 4px;
+  /* border: 0      ; */
+  background: #c4c4c4;
 }
 .checkbox-label .checkbox-icon::after,
 .checkbox2-label .checkbox-icon::after {
@@ -379,21 +374,6 @@ input[data-error]::after {
   transition: 0.3s;
   opacity: 0;
 }
-.checkbox-input {
-  display: none;
-}
-.checkbox-input:checked + .checkbox-label .checkbox-icon::after,
-.checkbox-input:checked + .checkbox2-label .checkbox-icon::after {
-  opacity: 1;
-}
-.checkbox-input:checked + .checkbox2-label .checkbox-icon {
-  background: #279e7a;
-}
-.checkbox2-label .checkbox-icon {
-  border-radius: 4px;
-  border: 0;
-  background: #c4c4c4;
-}
 .checkbox2-label .checkbox-icon::after {
   width: 12px;
   height: 8px;
@@ -405,6 +385,18 @@ input[data-error]::after {
   transform: rotate(-55deg);
   left: 21%;
   top: 19%;
+}
+.checkbox-input:checked + .checkbox-label .checkbox-icon,
+.checkbox-input:checked + .checkbox2-label .checkbox-icon {
+  background: #279e7a;
+}
+.checkbox-input:checked + .checkbox-label .checkbox-icon {
+  outline: 1px solid #279e7a;
+  border: 3px solid #232323;
+  /* box-shadow: inset 0 0 0 2px #000; */
+}
+.checkbox-input:checked + .checkbox2-label .checkbox-icon::after {
+  opacity: 1;
 }
 .modal-close {
   position: absolute;
@@ -444,9 +436,56 @@ input[data-error]::after {
   cursor: pointer;
   border: 0;
   width: max(20%, 170px);
-  /* width: 150px; */
-  /* width: max(100%, 150px); */
 }
+.btn-submit {
+  text-transform: none;
+}
+.successModal {
+  display: none;
+  height: 100%;
+}
+
+.successModal .modal-content {
+  position: absolute;
+  /* margin: 1rem auto; */
+  z-index: 21;
+  height: 100vh;
+  overflow-y: hidden;
+  top: 12%;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  border-radius: 8px 8px 0 0;
+}
+.successModal .modal-mask {
+  z-index: 20;
+}
+
+.successModal .modal-body {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.successModal h3 {
+  max-width: 85%;
+  font-size: 2rem;
+  text-align: center;
+  margin-top: auto;
+}
+
+.successModal h3 span {
+  display: block;
+  color: #c4c4c4;
+  line-height: 5rem;
+}
+
+.successModal button {
+  margin-top: auto;
+  margin-bottom: 20px;
+}
+
 /* custom select styles */
 .custom-select {
   position: relative;
@@ -502,11 +541,6 @@ input[data-error]::after {
   left: 0;
   right: 0;
   z-index: 99;
-}
-
-/* Hide the items when the select box is closed: */
-.select-hide {
-  display: none;
 }
 
 .select-items div:hover,
@@ -636,11 +670,11 @@ footer {
   }
   .hero-content .btn-signup {
     display: block;
-    outline: none;
-    font-size: 1.3rem;
-    padding: 15px 23px;
-    margin: 0;
-    margin-top: 59px;
+    /* outline: none; */
+    /* font-size: 1.3rem; */
+    /* padding: 15px 23px; */
+    /* margin: 0; */
+    /* margin-top: 59px; */
   }
   .hero-img {
     grid-column: span 8;
