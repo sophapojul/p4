@@ -1,69 +1,13 @@
 /* eslint-disable consistent-return */
 /* eslint-disable func-names */
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const icon = document.querySelector('.icon');
-/**
- * @const
- * @type  {NodeList}
- */
-const myLinks = document.querySelectorAll('.main-navbar a+a');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const dialog = document.querySelector('#dialog');
+
 /**
  * The above code is selecting the element with the id of reserve.
  *
  * @const  {HTMLFormElement}  reserve  inscription form
  */
 const reserve = document.querySelector('#reserve');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const first = document.querySelector('#first');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const last = document.querySelector('#last');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const email = document.querySelector('#email');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const birthdate = document.querySelector('#birthdate');
-/**
- * @const
- * @type  {HTMLInputElement}
- */
-const quantity = document.querySelector('#quantity');
-const textRegExp = /^(?=.{2,30}$)[\p{L}]+(?:['\-\s][p{L}]+)*$/iu;
-const emailRegExp =
-  /^[a-zA-Z]+([._-]?[a-zA-Z])*[@]{1}[a-zA-Z]+([._-]?[a-zA-Z]+)*[.]{1}[a-zA-Z]{2,3}$/i;
-const numberRegExp = /^(0?\d|[1-9]\d)$/;
-const emptyErrMsg = 'Le champ ne peut-être vide.';
-const textErrMsg =
-  "Le champ doit contenir au moins 2 caractères alphabétiques, ne pas avoir d'espace en début et fin de saisie et si besoin un trait d'union - ou une apostrophe ' ou un espace .";
-const emailErrMsg = 'Le champ doit contenir une adresse mail valide.';
-const dateErrMsg =
-  'Le champ doit contenir une date valide et vous devez avoir 12 ans.';
-const numberErrMsg =
-  'Vous devez saisir un nombre entier positif inférieur à 100.';
-const radiosErrMsg = 'Vous devez choisir une ville.';
-const cguErrMsg =
-  "Vous devez avoir lu et accepté les conditions d'utilisations.";
 // const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;
-const triggers = document.querySelectorAll('[aria-haspopup="dialog"]');
-const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
 let modal = null;
 let previousActiveElement = null;
 /**
@@ -74,7 +18,7 @@ function editNav() {
   const myTopnav = document.getElementById('myTopnav');
   myTopnav.classList.toggle('responsive');
 }
-icon.addEventListener('click', editNav);
+document.querySelector('.icon').addEventListener('click', editNav);
 /**
  * It takes an element as an argument, removes the active class from all of its siblings, and adds the
  * active class to itself
@@ -90,7 +34,7 @@ function setActive(el) {
 }
 /* The above code is adding an event listener to each link in the navbar. When the link is clicked, the
 setActive function is called. */
-[...myLinks].forEach((el) => {
+document.querySelectorAll('.main-navbar a+a').forEach((el) => {
   el.addEventListener('click', () => {
     setActive(el);
   });
@@ -101,7 +45,7 @@ setActive function is called. */
  */
 function trapFocus(el) {
   /**
-   * [firstFocusableElt description]
+   *
    * @let focusableElts
    * @type {Array}
    */
@@ -111,13 +55,13 @@ function trapFocus(el) {
     )
   );
   /**
-   * [firstFocusableElt description]
+   *
    * @let firstFocusableElt
    * @type {HTMLElement}
    */
   const firstFocusableElt = focusableElts[0];
   /**
-   * [firstFocusableElt description]
+   *
    * @let lastFocusableElt
    * @type {HTMLElement}
    */
@@ -171,7 +115,7 @@ function closeModal(ev) {
     .removeEventListener('click', closeModal);
   modal.lastElementChild.removeEventListener('click', closeModal);
   // eslint-disable-next-line no-use-before-define
-  document.removeEventListener('keydown', checkCloseModal);
+  modal.removeEventListener('keydown', checkCloseModal);
   // restoring focus
   previousActiveElement.focus();
   modal = null;
@@ -189,7 +133,7 @@ function checkCloseModal(ev) {
  * It sets the modal to open
  * @param  {HTMLElement} el - the modal element
  */
-function setToOpenModal(el) {
+function setTOpenModal(el) {
   Array.from(document.querySelector('#myTopnav').children).forEach((child) =>
     child.setAttribute('inert', 'true')
   );
@@ -228,13 +172,13 @@ const openModal = (ev) => {
   const el = document.getElementById(btn.getAttribute('aria-haspopup'));
   if (!modal) {
     previousActiveElement = document.activeElement;
-    setToOpenModal(el);
+    setTOpenModal(el);
   }
 };
 /**
  * It adds an event listener to each trigger element, which opens the modal when the trigger is clicked or Enter is pressed, which closes the modal when the trigger is clicked or Escape is pressed.
  */
-triggers.forEach((trigger) => {
+document.querySelectorAll('[aria-haspopup="dialog"]').forEach((trigger) => {
   /**
    * The above code is adding an event listener to the trigger element. When the trigger element is
   clicked, the openModal function is called.
@@ -251,9 +195,12 @@ triggers.forEach((trigger) => {
     }
   });
   /* Closing the modal when the user clicks on the button. */
-  dismissTriggers.forEach((dismissTrigger) => {
-    dismissTrigger.addEventListener('click', closeModal);
-  });
+  document
+    .querySelector('#dialog')
+    .querySelectorAll('[data-dismiss]')
+    .forEach((dismissTrigger) => {
+      dismissTrigger.addEventListener('click', closeModal);
+    });
 });
 /**
  * It adds an error message to the form field if it doesn't already have one
@@ -288,7 +235,9 @@ function setErrMsg(el, message) {
         'border:2px solid red;'
       );
   }
-  el.focus();
+  if (el.type !== 'date') {
+    el.focus();
+  }
 }
 // TODO set valid message and delete previous message
 /**
@@ -358,31 +307,52 @@ function notEmpty(elt) {
  * @returns   {Boolean} A boolean value.
  */
 function valid(elt) {
+  /**
+   *
+   *@const
+   *@type {HTMLInputElement}
+   */
   const el = elt;
-  const age = new Date().getFullYear() - new Date(el.value).getFullYear();
-  // TODO check once notNull and notEmpty cf inputValid
   if (!notNull(el) || !notEmpty(el)) {
+    /**
+     *
+     *@const label
+     *@type {HTMLLabelElement}
+     */
+    // @ts-ignore
+    const label = el.previousElementSibling;
+    const emptyErrMsg = `Le champ ${label.innerText} ne peut-être vide.`;
     setErrMsg(el, emptyErrMsg);
     return false;
   }
-  // TODO check message
   removeErrMsg(el);
   switch (el.type) {
-    case 'text':
+    case 'text': {
+      const textRegExp = /^(?=.{2,30}$)[\p{L}]+(?:['\-\s][p{L}]+)*$/iu;
+      const textErrMsg =
+        "Le champ doit contenir au moins 2 caractères alphabétiques et si besoin un trait d'union - ou une apostrophe ' ou un espace .";
       if (testRegExp(el, textRegExp)) {
         removeErrMsg(el);
         return true;
       }
       setErrMsg(el, textErrMsg);
       return false;
-    case 'email':
+    }
+    case 'email': {
+      const emailRegExp =
+        /^(?=.{2,40}$)[a-zA-Z]+([._-]?[a-zA-Z])*[@]{1}[a-zA-Z]+([._-]?[a-zA-Z]+)*[.]{1}[a-zA-Z]{2,3}$/i;
+      const emailErrMsg = 'Le champ doit contenir une adresse mail valide.';
       if (testRegExp(el, emailRegExp)) {
         removeErrMsg(el);
         return true;
       }
       setErrMsg(el, emailErrMsg);
       return false;
-    case 'date':
+    }
+    case 'date': {
+      const age = new Date().getFullYear() - new Date(el.value).getFullYear();
+      const dateErrMsg =
+        'Le champ doit contenir une date valide et vous devez avoir 12 ans.';
       if (
         new Date(el.value).toString() === 'Invalid Date' ||
         new Date(el.value).getFullYear() < 1900 ||
@@ -392,21 +362,30 @@ function valid(elt) {
         return false;
       }
       return true;
-    case 'number':
+    }
+    case 'number': {
+      const numberRegExp = /^\d{1,2}$/; // /^(0?\d|[1-9]\d)$/
+      const numberErrMsg =
+        'Vous devez saisir un nombre entier positif inférieur à 100.';
       if (testRegExp(el, numberRegExp)) {
         removeErrMsg(el);
         return true;
       }
       setErrMsg(el, numberErrMsg);
       return false;
-    case 'checkbox':
+    }
+    case 'checkbox': {
+      const cguErrMsg =
+        "Vous devez avoir lu et accepté les conditions d'utilisations.";
       if (el.checked) {
         removeErrMsg(el);
         return true;
       }
       setErrMsg(el, cguErrMsg);
       return false;
-    case 'radio':
+    }
+    case 'radio': {
+      const radiosErrMsg = 'Vous devez choisir une ville.';
       if (el.checked) {
         removeErrMsg(el);
         return true;
@@ -414,6 +393,7 @@ function valid(elt) {
       setErrMsg(el, radiosErrMsg);
       el.parentElement.style.border = '1px solid red';
       return false;
+    }
     default:
       return false;
   }
@@ -423,24 +403,21 @@ function valid(elt) {
  * @returns  {Boolean} The function firstValid() is being returned.
  */
 function firstValid() {
-  // @ts-ignore
-  return valid(first);
+  return valid(document.querySelector('#first'));
 }
 /**
  * If the last name is not empty, then validate it
  * @returns  {Boolean} The function lastValid() is being returned.
  */
 function lastValid() {
-  // @ts-ignore
-  return valid(last);
+  return valid(document.querySelector('#last'));
 }
 /**
  * If the email field is not empty, then validate it
  * @returns  {Boolean} a boolean value.
  */
 function emailValid() {
-  // @ts-ignore
-  return valid(email);
+  return valid(document.querySelector('#email'));
 }
 /**
  * It checks if the birthdate input is not empty, and if it's not, it checks if the date is valid. If
@@ -448,16 +425,14 @@ function emailValid() {
  * @returns  {Boolean} A boolean value.
  */
 function birthdateValid() {
-  // @ts-ignore
-  return valid(birthdate);
+  return valid(document.querySelector('#birthdate'));
 }
 /**
  * If the quantity field is not empty, then validate it using the regular expression.
  * @returns  {Boolean} the value of the function valid.
  */
 function quantityValid() {
-  // @ts-ignore
-  return valid(quantity);
+  return valid(document.querySelector('#quantity'));
 }
 /**
  * It checks if a radio button is selected, and if not, it displays an error message
@@ -473,6 +448,7 @@ function isSelected() {
   }
   if (document.querySelector('#formRadio').nextSibling.nodeName !== 'SMALL') {
     const errElt = document.createElement('small');
+    const radiosErrMsg = 'Vous devez choisir une ville.';
     errElt.textContent = radiosErrMsg;
     document
       .querySelector('#formRadio')
@@ -497,6 +473,8 @@ function cguChecked() {
    *@type  {HTMLInputElement}
    */
   const cgu = document.querySelector('#checkbox1');
+  const cguErrMsg =
+    "Vous devez avoir lu et accepté les conditions d'utilisations.";
   if (!cgu.checked) {
     setErrMsg(cgu, cguErrMsg);
     return false;

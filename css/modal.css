@@ -265,6 +265,11 @@ input {
   color: #f00;
   visibility: visible;
 }
+/* input:valid {
+  background-color: #ddffdd;
+  border: 2px solid #fe142f;
+} */
+
 .text-control {
   margin: 0;
   padding: 8px;
@@ -273,7 +278,7 @@ input {
   font-size: 20px;
   height: 48px;
 }
-.formData[data-error]::after {
+/* .formData[data-error]::after {
   content: attr(data-error);
   font-size: 0.6em;
   color: #e54858;
@@ -295,7 +300,7 @@ input[data-error]::after {
   content: attr(data-error);
   font-size: 0.6em;
   color: red;
-}
+} */
 .checkbox-input {
   display: none;
 }
