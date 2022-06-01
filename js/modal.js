@@ -46,7 +46,7 @@ document.querySelectorAll('.main-navbar a+a').forEach((el) => {
 function trapFocus(el) {
   /**
    *
-   * @let focusableElts
+   * @const focusableElts
    * @type {Array}
    */
   const focusableElts = Array.from(
@@ -56,13 +56,13 @@ function trapFocus(el) {
   );
   /**
    *
-   * @let firstFocusableElt
+   * @const firstFocusableElt
    * @type {HTMLElement}
    */
   const firstFocusableElt = focusableElts[0];
   /**
    *
-   * @let lastFocusableElt
+   * @const lastFocusableElt
    * @type {HTMLElement}
    */
   const lastFocusableElt = focusableElts[focusableElts.length - 1];
