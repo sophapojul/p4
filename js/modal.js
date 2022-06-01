@@ -46,9 +46,9 @@ const birthdate = document.querySelector('#birthdate');
  * @type  {HTMLInputElement}
  */
 const quantity = document.querySelector('#quantity');
-
 const textRegExp = /^(?=.{2,30}$)[\p{L}]+(?:['\-\s][p{L}]+)*$/iu;
-const emailRegExp = /^[\w][\w.-]+[@]{1}[\w.-]+[.]{1}[a-zA-Z]{2,3}$/i;
+const emailRegExp =
+  /^[a-zA-Z]+([._-]?[a-zA-Z])*[@]{1}[a-zA-Z]+([._-]?[a-zA-Z]+)*[.]{1}[a-zA-Z]{2,3}$/i;
 const numberRegExp = /^(0?\d|[1-9]\d)$/;
 const emptyErrMsg = 'Le champ ne peut-être vide.';
 const textErrMsg =
@@ -61,15 +61,11 @@ const numberErrMsg =
 const radiosErrMsg = 'Vous devez choisir une ville.';
 const cguErrMsg =
   "Vous devez avoir lu et accepté les conditions d'utilisations.";
-
-// const emailRegExp = /^\w+([.-_]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;d
-
+// const emailRegExp = /^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.[a-z]{2,3})+$/i;
 const triggers = document.querySelectorAll('[aria-haspopup="dialog"]');
 const dismissTriggers = dialog.querySelectorAll('[data-dismiss]');
-
 let modal = null;
 let previousActiveElement = null;
-
 /**
  * The function is called when the user clicks on the hamburger icon. The function toggles the class of
  * the navbar to responsive
@@ -78,7 +74,6 @@ function editNav() {
   const myTopnav = document.getElementById('myTopnav');
   myTopnav.classList.toggle('responsive');
 }
-
 icon.addEventListener('click', editNav);
 /**
  * It takes an element as an argument, removes the active class from all of its siblings, and adds the
@@ -100,7 +95,6 @@ setActive function is called. */
     setActive(el);
   });
 });
-
 /**
  * It traps the focus inside the dialog box
  * @param  {HTMLElement} el - The element that will be focused on when the dialog is opened.
@@ -131,11 +125,9 @@ function trapFocus(el) {
   const KEYCODE_TAB = '9';
   el.addEventListener('keydown', (ev) => {
     const isTabPressed = ev.key === 'Tab' || ev.code === KEYCODE_TAB;
-
     if (!isTabPressed) {
       return;
     }
-
     if (ev.shiftKey) {
       /* shift + tab */ if (document.activeElement === firstFocusableElt) {
         lastFocusableElt.focus();
@@ -184,12 +176,10 @@ function closeModal(ev) {
   previousActiveElement.focus();
   modal = null;
 }
-
 function checkCloseModal(ev) {
   if (ev.key === 'Enter' && ev.target.type === 'submit') {
-    // ev.preventDefault();
-    // document.querySelector('#reserve').submit();
     ev.target.click();
+    return;
   }
   if (ev.key === 'Escape' || ev.key === 'Enter') {
     closeModal(ev);
@@ -218,7 +208,7 @@ function setToOpenModal(el) {
     elt.addEventListener('click', closeModal)
   );
   el.lastElementChild.addEventListener('click', closeModal);
-  document.addEventListener('keydown', checkCloseModal);
+  el.addEventListener('keydown', checkCloseModal);
   trapFocus(el);
   modal = el;
 }
@@ -241,7 +231,6 @@ const openModal = (ev) => {
     setToOpenModal(el);
   }
 };
-
 /**
  * It adds an event listener to each trigger element, which opens the modal when the trigger is clicked or Enter is pressed, which closes the modal when the trigger is clicked or Escape is pressed.
  */
@@ -258,7 +247,6 @@ triggers.forEach((trigger) => {
   trigger.addEventListener('keydown', (ev) => {
     // @ts-ignore
     if (ev.key === 'Enter') {
-      ev.preventDefault();
       openModal(ev);
     }
   });
@@ -300,9 +288,9 @@ function setErrMsg(el, message) {
         'border:2px solid red;'
       );
   }
+  el.focus();
 }
 // TODO set valid message and delete previous message
-
 /**
  * It removes the error message and replaces the class `invalid` by the class `valid` on the parent
  * element of the element passed as argument
@@ -325,7 +313,6 @@ function removeErrMsg(el) {
   }
   el.parentElement.classList.add('valid');
 }
-
 /**
  * It takes a value and a regular expression and returns true if the value matches the regular
  * expression
@@ -337,7 +324,6 @@ function testRegExp(el, regExp) {
   const testedValue = regExp.test(el.value.trim());
   return !!testedValue;
 }
-
 /**
  * If the selector is not null, return true.
  * @param   {HTMLInputElement} el - The selector to check.
@@ -346,7 +332,6 @@ function testRegExp(el, regExp) {
 function notNull(el) {
   return el !== null;
 }
-
 /**
  * If the input is not empty, remove the error message and return true, otherwise set the error message
  * and return false
@@ -361,17 +346,11 @@ function notEmpty(elt) {
     case 'email':
     case 'number':
     case 'date':
-      if (el.value) {
-        removeErrMsg(el);
-        return true;
-      }
-      setErrMsg(el, emptyErrMsg);
-      return false;
+      return Boolean(el.value.trim());
     default:
       return true;
   }
 }
-
 /**
  * It checks if the input is valid, and if it is, it removes the error message, otherwise it sets the
  * error message
@@ -439,7 +418,6 @@ function valid(elt) {
       return false;
   }
 }
-
 /**
  * If the first name field is not empty, then validate it
  * @returns  {Boolean} The function firstValid() is being returned.
@@ -448,7 +426,6 @@ function firstValid() {
   // @ts-ignore
   return valid(first);
 }
-
 /**
  * If the last name is not empty, then validate it
  * @returns  {Boolean} The function lastValid() is being returned.
@@ -457,7 +434,6 @@ function lastValid() {
   // @ts-ignore
   return valid(last);
 }
-
 /**
  * If the email field is not empty, then validate it
  * @returns  {Boolean} a boolean value.
@@ -466,7 +442,6 @@ function emailValid() {
   // @ts-ignore
   return valid(email);
 }
-
 /**
  * It checks if the birthdate input is not empty, and if it's not, it checks if the date is valid. If
  * it is, it checks if the date is in the correct format
@@ -476,7 +451,6 @@ function birthdateValid() {
   // @ts-ignore
   return valid(birthdate);
 }
-
 /**
  * If the quantity field is not empty, then validate it using the regular expression.
  * @returns  {Boolean} the value of the function valid.
@@ -485,7 +459,6 @@ function quantityValid() {
   // @ts-ignore
   return valid(quantity);
 }
-
 /**
  * It checks if a radio button is selected, and if not, it displays an error message
  */
@@ -510,11 +483,9 @@ function isSelected() {
     document.querySelector('#formRadio').nextSibling.style.color = 'red';
     // @ts-ignore
     document.querySelector('#formRadio').style.border = '2px solid red';
-
     return false;
   }
 }
-
 /**
  * It checks if the checkbox is checked, if not, it displays an error message, if it is, it removes the
  * error message
@@ -533,7 +504,6 @@ function cguChecked() {
   removeErrMsg(cgu);
   return cgu.checked;
 }
-
 /**
  * It returns true if all the other functions return true
  * @returns {Boolean} A boolean value.
@@ -550,7 +520,6 @@ function validate() {
   );
   return validated;
 }
-
 /**
  * It creates a modal window with a success message and displays it
  * @param   {String} firstname - the first name of the user
@@ -578,7 +547,7 @@ function displaySuccessModal(firstname, lastname) {
       ></span>
       <div class="modal-body">
         <h3>Merci pour votre inscription ! <span>${firstname} ${lastname}</span></h3>
-        <button class="button" data-dismiss="dialog">Fermer</button>
+        <button class="button btn-submit" data-dismiss="dialog">Fermer</button>
       </div>
     </div>
     <div class="modal-mask"></div>
@@ -616,7 +585,6 @@ Array.from(document.querySelectorAll('span[role="radio"]')).forEach(
     });
   }
 );
-
 /* The above code is adding an event listener to each span element with the role of checkbox. The event
 listener is listening for the enter or space key to be pressed. If the enter or space key is
 pressed, the code will check the checkbox that is associated with the span element. */
@@ -636,7 +604,6 @@ document.querySelectorAll('span[role="checkbox"]').forEach((element) => {
     }
   });
 });
-
 /* Adding an event listener to each input element with the form attribute of "reserve" and calling the
 valid function on each change. */
 /**
@@ -648,13 +615,12 @@ document.querySelectorAll('input[form="reserve"]').forEach((el) => {
   // @ts-ignore
   el.addEventListener('change', () => valid(el));
 });
-
 /**
  * The above code is listening for a submit event on the form. If the form is valid, it will send the
 form data to the console. If the form is not valid, it will prevent the form from submitting.
  *
- * @param   {String}  submit  [submit description]
- * @param   {SubmitEvent}  ev      [ev description]
+ * @param   {String}  submit  listener type
+ * @param   {SubmitEvent}  ev  submit event
  *
  */
 reserve.addEventListener('submit', function (ev) {

@@ -10,7 +10,6 @@
   padding: 0;
 }
 /* Landing Page */
-
 body {
   margin: 0;
   display: flex;
@@ -21,38 +20,31 @@ body {
   max-width: 1300px;
   margin: 0 auto;
 }
-
 a {
   text-decoration: none;
 }
-
 /* button {
   border: 0;
 } */
-
 ul {
   list-style: none;
 }
-
 p {
   margin-bottom: 0;
   padding: 0.5vw;
 }
-
 img {
   padding-right: 1rem;
   width: 100%;
   height: auto;
   object-fit: cover;
 }
-
 .topnav {
   overflow: hidden;
   display: flex;
   justify-content: space-between;
   flex-wrap: wrap;
 }
-
 .header-logo {
   margin: 3.5%;
   margin-bottom: 0;
@@ -62,7 +54,6 @@ img {
   flex-direction: column;
   margin: 3.5%;
 }
-
 .topnav a {
   width: fit-content;
   display: none;
@@ -74,7 +65,6 @@ img {
   font-family: Roboto, sans-serif;
   position: relative;
 }
-
 .topnav a:hover,
 .topnav a:focus,
 .topnav a.active {
@@ -82,7 +72,6 @@ img {
   color: #ffffff;
   border-radius: 10px;
 }
-
 .topnav a:not(a.icon):hover::after,
 .topnav a:not(a.icon):focus::after,
 .topnav a.active:not(a.icon)::after {
@@ -96,7 +85,6 @@ img {
   margin: 0 auto;
   background-color: #fff;
 }
-
 .topnav a.icon {
   display: block;
   padding: clamp(0.2rem, 0.1rem + 1vw, 1rem);
@@ -104,13 +92,11 @@ img {
   color: red;
   align-self: end;
 }
-
 .topnav a.icon:hover,
 .topnav a.icon:focus {
   border-radius: 0.5rem;
   color: white;
 }
-
 .topnav.responsive .main-navbar {
   position: fixed;
   top: clamp(4rem, 3.5rem + 4vw, 5rem);
@@ -142,7 +128,6 @@ main {
   margin: 1vw 3vw;
   border-radius: 2rem;
 }
-
 /* .modal-btn {
   font-size: 145%;
   background: #fe142f;
@@ -154,19 +139,15 @@ main {
   border-radius: 1rem;
   cursor: pointer;
 } */
-
 .modal-btn:hover {
   background: #3876ac;
 }
-
 .footer {
   margin: 20px;
   padding: 10px;
   font-family: var(--font-slab);
 }
-
 /* Modal form */
-
 .button {
   background: #fe142f;
   margin-top: 0.5em;
@@ -176,11 +157,9 @@ main {
   cursor: pointer;
   font-size: 16px;
 }
-
 .button:hover {
   background: #3876ac;
 }
-
 .modal {
   display: none;
   /* position: fixed;
@@ -192,20 +171,17 @@ main {
   overflow: auto;
   background-color: rgba(26, 39, 156, 0.4); */
 }
-
 .modal-header {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
   margin: 1rem;
 }
-
 .modal-header h2 {
   margin: 1rem;
   font-size: 1.2em;
   display: none;
 }
-
 .modal-content {
   margin: 2.5% auto;
   width: 100%;
@@ -226,7 +202,6 @@ main {
   animation-name: modalopen;
   animation-duration: var(--modal-duration);
 }
-
 .modal-mask {
   position: fixed;
   top: 0;
@@ -241,7 +216,6 @@ main {
   padding: 15px 8%;
   margin: 15px auto;
 }
-
 label {
   font-family: var(--font-default);
   font-size: 15px;
@@ -317,7 +291,6 @@ input {
 .formData[data-error-visible='true'] .text-control {
   border: 2px solid #e54858;
 }
-
 input[data-error]::after {
   content: attr(data-error);
   font-size: 0.6em;
@@ -338,7 +311,6 @@ input[data-error]::after {
   display: block;
   width: 20px;
   height: 20px;
-  border-radius: 50%;
   /* text-indent: 29px; */
   white-space: nowrap;
   position: absolute;
@@ -347,15 +319,15 @@ input[data-error]::after {
   transition: 0.3s;
 }
 .checkbox-label .checkbox-icon {
-  outline: thin solid;
+  border-radius: 50%;
+  border: 1px solid #fff;
 }
 .checkbox-label .checkbox-icon:focus,
 .checkbox-input:checked + .checkbox-label .checkbox-icon:focus {
-  outline: auto;
+  outline: double;
 }
 .checkbox2-label .checkbox-icon {
   border-radius: 4px;
-  /* border: 0      ; */
   background: #c4c4c4;
 }
 .checkbox-label .checkbox-icon::after,
@@ -365,7 +337,6 @@ input[data-error]::after {
   height: 13px;
   background-color: #279e7a;
   border-radius: 50%;
-  text-indent: 29px;
   white-space: nowrap;
   position: absolute;
   left: 50%;
@@ -393,7 +364,6 @@ input[data-error]::after {
 .checkbox-input:checked + .checkbox-label .checkbox-icon {
   outline: 1px solid #279e7a;
   border: 3px solid #232323;
-  /* box-shadow: inset 0 0 0 2px #000; */
 }
 .checkbox-input:checked + .checkbox2-label .checkbox-icon::after {
   opacity: 1;
@@ -444,7 +414,6 @@ input[data-error]::after {
   display: none;
   height: 100%;
 }
-
 .successModal .modal-content {
   position: absolute;
   /* margin: 1rem auto; */
@@ -460,32 +429,27 @@ input[data-error]::after {
 .successModal .modal-mask {
   z-index: 20;
 }
-
 .successModal .modal-body {
   height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
 }
-
 .successModal h3 {
   max-width: 85%;
   font-size: 2rem;
   text-align: center;
   margin-top: auto;
 }
-
 .successModal h3 span {
   display: block;
   color: #c4c4c4;
   line-height: 5rem;
 }
-
 .successModal button {
   margin-top: auto;
   margin-bottom: 20px;
 }
-
 /* custom select styles */
 .custom-select {
   position: relative;
@@ -493,14 +457,12 @@ input[data-error]::after {
   font-size: 1.1rem;
   font-weight: normal;
 }
-
 .custom-select select {
   display: none;
 }
 .select-selected {
   background-color: #fff;
 }
-
 /* Style the arrow inside the select element: */
 .select-selected:after {
   position: absolute;
@@ -515,13 +477,11 @@ input[data-error]::after {
   transform: rotate(-48deg);
   border-radius: 5px 0 5px 0;
 }
-
 /* Point the arrow upwards when the select box is open (active): */
 .select-selected.select-arrow-active:after {
   transform: rotate(135deg);
   top: 13px;
 }
-
 .select-items div,
 .select-selected {
   color: #000;
@@ -532,7 +492,6 @@ input[data-error]::after {
   border-radius: 8px;
   height: 48px;
 }
-
 /* Style items (options): */
 .select-items {
   position: absolute;
@@ -542,7 +501,6 @@ input[data-error]::after {
   right: 0;
   z-index: 99;
 }
-
 .select-items div:hover,
 .same-as-selected {
   background-color: rgba(0, 0, 0, 0.1);
