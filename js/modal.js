@@ -133,7 +133,7 @@ function checkCloseModal(ev) {
  * It sets the modal to open
  * @param  {HTMLElement} el - the modal element
  */
-function setTOpenModal(el) {
+function setToOpenModal(el) {
   Array.from(document.querySelector('#myTopnav').children).forEach((child) =>
     child.setAttribute('inert', 'true')
   );
@@ -172,7 +172,7 @@ const openModal = (ev) => {
   const el = document.getElementById(btn.getAttribute('aria-haspopup'));
   if (!modal) {
     previousActiveElement = document.activeElement;
-    setTOpenModal(el);
+    setToOpenModal(el);
   }
 };
 /**
