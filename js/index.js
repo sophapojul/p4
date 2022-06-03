@@ -64,7 +64,7 @@ valid function on each change. */
 document.querySelectorAll('input[form="reserve"]').forEach((el) => {
   // NodeList is an Array-like object
   // @ts-ignore
-  el.addEventListener('change', () => valid(el));
+  el.addEventListener('blur', () => valid(el));
 });
 /**
  * The above code is listening for a submit event on the form. If the form is valid, it will send the
@@ -89,8 +89,10 @@ reserve.addEventListener('submit', function (ev) {
       .querySelectorAll('.formData')
       .forEach((div) => div.classList.remove('valid'));
     closeModal(ev);
-    // @ts-ignore
-    displaySuccessModal(data?.first, data?.last);
-    // ?. optional chaining operator
+    // eslint-disable-next-line no-prototype-builtins
+    if (data.hasOwnProperty('first') && data.hasOwnProperty('last')) {
+      // @ts-ignore
+      displaySuccessModal(data.first, data.last);
+    }
   }
 });
