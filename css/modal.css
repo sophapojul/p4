@@ -309,6 +309,8 @@ input {
   visibility: hidden;
 }
 .formData.invalid small {
+  display: block;
+  margin-top: 0.5rem;
   font-size: 0.8rem;
   color: red;
   visibility: visible;
@@ -403,7 +405,7 @@ input {
 .successModal .modal-content {
   position: absolute;
   z-index: 21;
-  height: 100vh;
+  /* height: 100%; */
   overflow-y: hidden;
   top: 12%;
   left: 0;
@@ -412,7 +414,6 @@ input {
   border-radius: 8px 8px 0 0;
 }
 .successModal .modal-body {
-  height: 100%;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -431,7 +432,7 @@ input {
 }
 .successModal button {
   margin-top: auto;
-  margin-bottom: 20px;
+  margin-bottom: 3rem;
 }
 /* Footer */
 footer {
@@ -446,6 +447,13 @@ footer {
   margin: 50px 0 30px;
   font-weight: bolder;
   text-align: center;
+}
+fieldset {
+  font-size: 1rem;
+  font-weight: normal;
+}
+legend {
+  padding: 1rem 5px;
 }
 /* Desktop */
 @media screen and (min-width: 980px) {

@@ -64,7 +64,7 @@ valid function on each change. */
 document.querySelectorAll('input[form="reserve"]').forEach((el) => {
   // NodeList is an Array-like object
   // @ts-ignore
-  el.addEventListener('blur', () => valid(el));
+  el.addEventListener('change', () => valid(el));
 });
 /**
  * The above code is listening for a submit event on the form. If the form is valid, it will send the
