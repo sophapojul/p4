@@ -66,7 +66,8 @@ export function valid(elt) {
   removeErrMsg(el);
   switch (el.type) {
     case 'text': {
-      const textRegExp = /^(?=.{2,30}$)[\p{L}]+(?:['\-\s][p{L}]+)*$/iu;
+      const textRegExp =
+        /^(?=.{2,30}$)[A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff]+(?:['\s-][A-Za-z\u00C0-\u00D6\u00D8-\u00f6\u00f8-\u00ff]+)*$/iu;
       const textErrMsg =
         "Le champ doit contenir au moins 2 caractères alphabétiques et si besoin un trait d'union - ou une apostrophe ' ou un espace .";
       if (testRegExp(el, textRegExp)) {
