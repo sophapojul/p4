@@ -426,7 +426,8 @@ input {
 .successModal h3 span {
   display: block;
   color: #c4c4c4;
-  line-height: 5rem;
+  line-height: 3rem;
+  margin-bottom: 1.5rem;
 }
 .successModal button {
   margin-top: auto;
