@@ -1,3 +1,4 @@
+/* eslint-disable no-param-reassign */
 let modal = null;
 let previousActiveElement = null;
 /**
@@ -50,6 +51,7 @@ export function trapFocus(el) {
  * @param  {Event}  ev - the event object
  */
 export function closeModal(ev) {
+  console.log('ev:', ev);
   if (!modal) return;
   ev.preventDefault();
   // eslint-disable-next-line no-use-before-define
@@ -68,6 +70,7 @@ export function closeModal(ev) {
     }
   );
   modal.removeAttribute('style');
+  console.log('modal:', modal);
   modal.setAttribute('aria-hidden', 'true');
   modal.removeAttribute('aria-modal');
   modal.removeEventListener('click', closeModal);
@@ -80,6 +83,9 @@ export function closeModal(ev) {
   // restoring focus
   previousActiveElement.focus();
   modal = null;
+  if (document.querySelector('#successModal')) {
+    document.querySelector('#successModal').remove();
+  }
 }
 function checkCloseModal(ev) {
   if (ev.key === 'Enter' && ev.target.type === 'submit') {
