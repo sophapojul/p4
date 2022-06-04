@@ -79,7 +79,7 @@ export function valid(elt) {
     }
     case 'email': {
       const emailRegExp =
-        /^(?=.{2,40}$)[a-zA-Z]+([._-]?[a-zA-Z])*[@]{1}[a-zA-Z]+([._-]?[a-zA-Z]+)*[.]{1}[a-zA-Z]{2,3}$/i;
+        /^(?=.{2,40}$)[\w]+([.-]?[a-zA-Z\d])*[@]{1}[\w]+([.-]?[\w]+)*[.]{1}[a-zA-Z]{2,3}$/i;
       const emailErrMsg = 'Le champ doit contenir une adresse mail valide.';
       if (testRegExp(el, emailRegExp)) {
         removeErrMsg(el);
